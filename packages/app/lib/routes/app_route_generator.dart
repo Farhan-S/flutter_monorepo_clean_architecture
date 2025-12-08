@@ -1,6 +1,8 @@
 import 'package:core/core.dart';
 import 'package:features_auth/features_auth.dart';
 import 'package:features_home/features_home.dart';
+import 'package:features_onboarding/features_onboarding.dart';
+import 'package:features_splash/features_splash.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -19,6 +21,24 @@ class AppRouteGenerator {
 
     // Fallback to manual route handling
     switch (settings.name) {
+      case AppRoutes.splash:
+        return _createRoute(
+          BlocProvider(
+            create: (_) => getIt<SplashBloc>(),
+            child: const SplashPage(),
+          ),
+          settings,
+        );
+
+      case AppRoutes.onboarding:
+        return _createRoute(
+          BlocProvider(
+            create: (_) => getIt<OnboardingBloc>(),
+            child: const OnboardingPage(),
+          ),
+          settings,
+        );
+
       case AppRoutes.home:
         return _createRoute(HomePage(dioClient: getIt<DioClient>()), settings);
 
@@ -83,6 +103,30 @@ class AppRouteGenerator {
   static void registerAllRoutes() {
     // Features can register their routes here
     // This allows features to be modular and self-contained
+
+    // Splash route
+    AppRouteRegistry.registerRoute(
+      AppRoutes.splash,
+      (settings) => MaterialPageRoute(
+        builder: (_) => BlocProvider(
+          create: (_) => getIt<SplashBloc>(),
+          child: const SplashPage(),
+        ),
+        settings: settings,
+      ),
+    );
+
+    // Onboarding route
+    AppRouteRegistry.registerRoute(
+      AppRoutes.onboarding,
+      (settings) => MaterialPageRoute(
+        builder: (_) => BlocProvider(
+          create: (_) => getIt<OnboardingBloc>(),
+          child: const OnboardingPage(),
+        ),
+        settings: settings,
+      ),
+    );
 
     // Example: Register home routes
     AppRouteRegistry.registerRoute(

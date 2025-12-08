@@ -20,6 +20,10 @@ dependencies:
     path: ../features_user
   features_home:
     path: ../features_home
+  features_splash:
+    path: ../features_splash
+  features_onboarding:
+    path: ../features_onboarding
 
   # State Management
   flutter_bloc: ^8.1.6

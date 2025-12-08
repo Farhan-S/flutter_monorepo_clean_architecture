@@ -1,8 +1,11 @@
 import 'package:core/core.dart';
 import 'package:features_auth/features_auth.dart';
 import 'package:features_home/features_home.dart';
+import 'package:features_onboarding/features_onboarding.dart';
+import 'package:features_splash/features_splash.dart';
 import 'package:features_user/features_user.dart';
 import 'package:get_it/get_it.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final getIt = GetIt.instance;
 
@@ -10,6 +13,10 @@ final getIt = GetIt.instance;
 /// Call this once before runApp()
 Future<void> setupDependencyInjection() async {
   // ==================== Core Layer ====================
+
+  // SharedPreferences - Singleton
+  final sharedPreferences = await SharedPreferences.getInstance();
+  getIt.registerLazySingleton<SharedPreferences>(() => sharedPreferences);
 
   // Token Storage - Singleton
   getIt.registerLazySingleton<TokenStorage>(() => SecureTokenStorage());
@@ -76,6 +83,51 @@ Future<void> setupDependencyInjection() async {
     () => RunNetworkTestsUseCase(getIt<NetworkTestRepository>()),
   );
 
+  // ==================== Features Splash ====================
+
+  // App Init Data Source
+  getIt.registerLazySingleton<AppInitDataSource>(
+    () => AppInitDataSource(
+      getIt<TokenStorage>(),
+      getIt<SharedPreferences>(),
+    ),
+  );
+
+  // App Initialization Repository
+  getIt.registerLazySingleton<AppInitializationRepository>(
+    () => AppInitializationRepositoryImpl(getIt<AppInitDataSource>()),
+  );
+
+  // App Initialization Use Cases
+  getIt.registerLazySingleton<InitializeAppUseCase>(
+    () => InitializeAppUseCase(getIt<AppInitializationRepository>()),
+  );
+
+  getIt.registerLazySingleton<CheckAuthStatusUseCase>(
+    () => CheckAuthStatusUseCase(getIt<AppInitializationRepository>()),
+  );
+
+  // ==================== Features Onboarding ====================
+
+  // Onboarding Local Data Source
+  getIt.registerLazySingleton<OnboardingLocalDataSource>(
+    () => OnboardingLocalDataSource(getIt<SharedPreferences>()),
+  );
+
+  // Onboarding Repository
+  getIt.registerLazySingleton<OnboardingRepository>(
+    () => OnboardingRepositoryImpl(getIt<OnboardingLocalDataSource>()),
+  );
+
+  // Onboarding Use Cases
+  getIt.registerLazySingleton<CompleteOnboardingUseCase>(
+    () => CompleteOnboardingUseCase(getIt<OnboardingRepository>()),
+  );
+
+  getIt.registerLazySingleton<CheckOnboardingStatusUseCase>(
+    () => CheckOnboardingStatusUseCase(getIt<OnboardingRepository>()),
+  );
+
   // ==================== Presentation Layer ====================
 
   // Auth BLoC - Factory (new instance each time)
@@ -91,6 +143,22 @@ Future<void> setupDependencyInjection() async {
   getIt.registerFactory<NetworkTestBloc>(
     () => NetworkTestBloc(
       runNetworkTestsUseCase: getIt<RunNetworkTestsUseCase>(),
+    ),
+  );
+
+  // Splash BLoC - Factory
+  getIt.registerFactory<SplashBloc>(
+    () => SplashBloc(
+      initializeAppUseCase: getIt<InitializeAppUseCase>(),
+      checkAuthStatusUseCase: getIt<CheckAuthStatusUseCase>(),
+    ),
+  );
+
+  // Onboarding BLoC - Factory
+  getIt.registerFactory<OnboardingBloc>(
+    () => OnboardingBloc(
+      repository: getIt<OnboardingRepository>(),
+      completeOnboardingUseCase: getIt<CompleteOnboardingUseCase>(),
     ),
   );
 }

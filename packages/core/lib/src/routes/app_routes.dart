@@ -5,6 +5,10 @@ import 'package:flutter/material.dart';
 class AppRoutes {
   // ==================== Route Names ====================
 
+  // Splash & Onboarding Routes
+  static const String splash = '/splash';
+  static const String onboarding = '/onboarding';
+
   // Home Routes
   static const String home = '/';
   static const String networkTest = '/network-test';
@@ -26,6 +30,16 @@ class AppRoutes {
 
   // ==================== Navigation Helpers ====================
 
+  /// Navigate to splash page
+  static Future<void> navigateToSplash(BuildContext context) {
+    return Navigator.pushNamedAndRemoveUntil(context, splash, (route) => false);
+  }
+
+  /// Navigate to onboarding page
+  static Future<void> navigateToOnboarding(BuildContext context) {
+    return Navigator.pushNamedAndRemoveUntil(context, onboarding, (route) => false);
+  }
+
   /// Navigate to home page
   static Future<void> navigateToHome(BuildContext context) {
     return Navigator.pushNamedAndRemoveUntil(context, home, (route) => false);
@@ -33,7 +47,7 @@ class AppRoutes {
 
   /// Navigate to login page
   static Future<void> navigateToLogin(BuildContext context) {
-    return Navigator.pushNamed(context, login);
+    return Navigator.pushNamedAndRemoveUntil(context, login, (route) => false);
   }
 
   /// Navigate to network test page

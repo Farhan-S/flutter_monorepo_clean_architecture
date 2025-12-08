@@ -1,0 +1,33 @@
+name: features_onboarding
+description: Onboarding feature module with introduction screens
+version: 1.0.0
+publish_to: none
+
+environment:
+  sdk: ^3.9.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Local packages
+  core:
+    path: ../core
+
+  # State Management
+  flutter_bloc: ^8.1.6
+  bloc: ^8.1.4
+
+  # Functional Programming
+  dartz: ^0.10.1
+
+  # Value Equality
+  equatable: ^2.0.7
+
+  # Local Storage
+  shared_preferences: ^2.3.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
