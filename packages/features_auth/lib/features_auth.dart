@@ -1,4 +1,4 @@
-library features_auth;
+library;
 
 // Data Layer - Data Sources
 export 'data/datasources/remote/auth_remote_datasource.dart';

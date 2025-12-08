@@ -27,7 +27,10 @@ class DioClient {
       receiveTimeout: Duration(seconds: NetworkConfig.receiveTimeoutSeconds),
       sendTimeout: Duration(seconds: NetworkConfig.sendTimeoutSeconds),
       headers: NetworkConfig.defaultHeaders,
-      validateStatus: (status) => status != null && status < 500,
+      // Only treat 2xx status codes as successful
+      // 4xx and 5xx will be caught as DioException and converted to ApiException
+      validateStatus: (status) =>
+          status != null && status >= 200 && status < 300,
     );
 
     dio = Dio(options);

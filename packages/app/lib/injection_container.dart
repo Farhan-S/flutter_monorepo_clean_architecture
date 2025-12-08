@@ -1,8 +1,8 @@
-import 'package:get_it/get_it.dart';
-
 import 'package:core/core.dart';
 import 'package:features_auth/features_auth.dart';
+import 'package:features_home/features_home.dart';
 import 'package:features_user/features_user.dart';
+import 'package:get_it/get_it.dart';
 
 final getIt = GetIt.instance;
 
@@ -59,14 +59,38 @@ Future<void> setupDependencyInjection() async {
     () => GetUserByIdUseCase(getIt<UserRepository>()),
   );
 
+  // ==================== Features Home ====================
+
+  // Network Test Data Source
+  getIt.registerLazySingleton<NetworkTestDataSource>(
+    () => NetworkTestDataSource(getIt<DioClient>()),
+  );
+
+  // Network Test Repository
+  getIt.registerLazySingleton<NetworkTestRepository>(
+    () => NetworkTestRepositoryImpl(getIt<NetworkTestDataSource>()),
+  );
+
+  // Network Test Use Case
+  getIt.registerLazySingleton<RunNetworkTestsUseCase>(
+    () => RunNetworkTestsUseCase(getIt<NetworkTestRepository>()),
+  );
+
   // ==================== Presentation Layer ====================
 
-  // BLoC - Factory (new instance each time)
+  // Auth BLoC - Factory (new instance each time)
   getIt.registerFactory<AuthBloc>(
     () => AuthBloc(
       loginUseCase: getIt<LoginUseCase>(),
       logoutUseCase: getIt<LogoutUseCase>(),
       getCurrentUserUseCase: getIt<GetCurrentUserUseCase>(),
+    ),
+  );
+
+  // Network Test BLoC - Factory
+  getIt.registerFactory<NetworkTestBloc>(
+    () => NetworkTestBloc(
+      runNetworkTestsUseCase: getIt<RunNetworkTestsUseCase>(),
     ),
   );
 }

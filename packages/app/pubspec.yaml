@@ -18,6 +18,8 @@ dependencies:
     path: ../features_auth
   features_user:
     path: ../features_user
+  features_home:
+    path: ../features_home
 
   # State Management
   flutter_bloc: ^8.1.6

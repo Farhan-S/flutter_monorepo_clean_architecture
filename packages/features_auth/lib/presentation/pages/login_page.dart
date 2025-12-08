@@ -1,6 +1,7 @@
+import 'package:core/core.dart';
+import 'package:features_auth/features_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:features_auth/features_auth.dart';
 
 /// Login page with BLoC pattern
 class LoginPage extends StatelessWidget {
@@ -30,14 +31,13 @@ class LoginPage extends StatelessWidget {
               ),
             );
 
-            // Navigate to home (you can add navigation logic here)
+            // Navigate to home after successful login
+            AppRoutes.navigateToHome(context);
           }
         },
         builder: (context, state) {
           if (state is AuthLoading) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+            return const Center(child: CircularProgressIndicator());
           }
 
           return const SingleChildScrollView(

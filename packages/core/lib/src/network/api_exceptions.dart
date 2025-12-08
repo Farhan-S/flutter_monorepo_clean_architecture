@@ -23,11 +23,11 @@ class NetworkException extends ApiException {
 /// Server-side error exception (5xx)
 class ServerException extends ApiException {
   ServerException(
-    String message, [
-    int? code,
-    dynamic originalError,
-    StackTrace? stackTrace,
-  ]) : super(message, code, originalError, stackTrace);
+    super.message, [
+    super.code,
+    super.originalError,
+    super.stackTrace,
+  ]);
 }
 
 /// Unauthorized exception (401)
