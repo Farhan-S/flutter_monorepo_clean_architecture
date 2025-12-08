@@ -16,6 +16,8 @@ class LoginPage extends StatelessWidget {
       ),
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
+          debugPrint('🔐 LoginPage - State changed: ${state.runtimeType}');
+
           if (state is AuthError) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -24,6 +26,8 @@ class LoginPage extends StatelessWidget {
               ),
             );
           } else if (state is AuthAuthenticated) {
+            debugPrint('🔐 LoginPage - User authenticated: ${state.user.name}');
+
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 content: Text('Login successful!'),
@@ -32,10 +36,15 @@ class LoginPage extends StatelessWidget {
             );
 
             // Navigate to home after successful login
+            debugPrint('🔐 LoginPage - Navigating to home...');
             AppRoutes.navigateToHome(context);
           }
         },
         builder: (context, state) {
+          debugPrint(
+            '🔐 LoginPage - Building with state: ${state.runtimeType}',
+          );
+
           if (state is AuthLoading) {
             return const Center(child: CircularProgressIndicator());
           }

@@ -3,29 +3,61 @@ import 'package:features_auth/features_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../widgets/auth_status_card.dart';
-import '../widgets/info_card.dart';
-
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   final DioClient dioClient;
 
   const HomePage({super.key, required this.dioClient});
 
   @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    super.initState();
+    // Trigger auth check when page loads to ensure we have the latest state
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final authBloc = context.read<AuthBloc>();
+      final currentState = authBloc.state;
+      debugPrint(
+        '🏠 HomePage - initState - Current AuthBloc state: ${currentState.runtimeType}',
+      );
+
+      // If state is not authenticated or loading, trigger a check
+      if (currentState is! AuthAuthenticated && currentState is! AuthLoading) {
+        debugPrint('🏠 HomePage - Triggering auth check...');
+        authBloc.add(const AuthCheckRequested());
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Clean Architecture Demo'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-      ),
       body: BlocConsumer<AuthBloc, AuthState>(
+        listenWhen: (previous, current) {
+          // Listen to all state changes
+          debugPrint(
+            '🏠 HomePage - State changed: ${previous.runtimeType} -> ${current.runtimeType}',
+          );
+          return true;
+        },
+        buildWhen: (previous, current) {
+          // Rebuild on all state changes
+          debugPrint('🏠 HomePage - Rebuilding: ${current.runtimeType}');
+          return true;
+        },
         listener: (context, state) {
+          debugPrint('🏠 HomePage - Listener triggered: ${state.runtimeType}');
+
           // Handle logout success
           if (state is AuthUnauthenticated) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 content: Text('Logged out successfully'),
                 backgroundColor: Colors.orange,
+                behavior: SnackBarBehavior.floating,
               ),
             );
             // Navigate to login page
@@ -37,108 +69,469 @@ class HomePage extends StatelessWidget {
               SnackBar(
                 content: Text(state.message),
                 backgroundColor: Colors.red,
+                behavior: SnackBarBehavior.floating,
               ),
             );
           }
         },
         builder: (context, state) {
-          return SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // App Info
-                  const Icon(Icons.architecture, size: 100, color: Colors.blue),
-                  const SizedBox(height: 24),
+          debugPrint('🏠 HomePage - Building with state: ${state.runtimeType}');
 
-                  const Text(
+          final isAuthenticated = state is AuthAuthenticated;
+          final isLoading = state is AuthLoading;
+
+          debugPrint(
+            '🏠 HomePage - isAuthenticated: $isAuthenticated, isLoading: $isLoading',
+          );
+
+          return CustomScrollView(
+            slivers: [
+              // App Bar
+              SliverAppBar(
+                expandedHeight: 200,
+                pinned: true,
+                flexibleSpace: FlexibleSpaceBar(
+                  title: const Text(
                     'Clean Architecture',
-                    style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      shadows: [Shadow(blurRadius: 10, color: Colors.black26)],
+                    ),
+                  ),
+                  background: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Theme.of(context).colorScheme.primary,
+                          Theme.of(context).colorScheme.secondary,
+                        ],
+                      ),
+                    ),
+                    child: const Center(
+                      child: Icon(
+                        Icons.architecture,
+                        size: 80,
+                        color: Colors.white70,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
+              // Content
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const SizedBox(height: 16),
+
+                      // User Profile Card (if authenticated)
+                      if (state is AuthAuthenticated)
+                        _buildUserProfileCard(context, state),
+
+                      // Authentication Status Card
+                      _buildAuthStatusCard(
+                        context,
+                        state,
+                        isAuthenticated,
+                        isLoading,
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // Quick Actions
+                      _buildQuickActions(context, isAuthenticated, state),
+
+                      const SizedBox(height: 24),
+
+                      // Features Section
+                      _buildFeaturesSection(context),
+
+                      const SizedBox(height: 24),
+
+                      // Architecture Info
+                      _buildArchitectureInfo(context),
+
+                      const SizedBox(height: 32),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildUserProfileCard(BuildContext context, AuthAuthenticated state) {
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Theme.of(context).colorScheme.primaryContainer,
+              Theme.of(context).colorScheme.secondaryContainer,
+            ],
+          ),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        padding: const EdgeInsets.all(20),
+        child: Row(
+          children: [
+            CircleAvatar(
+              radius: 40,
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              backgroundImage: state.user.avatar != null
+                  ? NetworkImage(state.user.avatar!)
+                  : null,
+              child: state.user.avatar == null
+                  ? Text(
+                      state.user.name[0].toUpperCase(),
+                      style: const TextStyle(
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    )
+                  : null,
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    state.user.name,
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    state.user.email,
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyMedium?.copyWith(color: Colors.grey[700]),
                   ),
                   const SizedBox(height: 8),
-
-                  Text(
-                    'with Melos Monorepo',
-                    style: TextStyle(fontSize: 18, color: Colors.grey[600]),
-                  ),
-                  const SizedBox(height: 48),
-
-                  // Auth Status
-                  AuthStatusCard(state: state),
-
-                  const SizedBox(height: 24),
-
-                  // Login Button
-                  if (state is! AuthAuthenticated)
-                    ElevatedButton.icon(
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => BlocProvider.value(
-                              value: context.read<AuthBloc>(),
-                              child: const LoginPage(),
-                            ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.green.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.check_circle,
+                          size: 16,
+                          color: Colors.green[700],
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          'Authenticated',
+                          style: TextStyle(
+                            color: Colors.green[700],
+                            fontWeight: FontWeight.w600,
+                            fontSize: 12,
                           ),
-                        );
-                      },
-                      icon: const Icon(Icons.login),
-                      label: const Text('Login with BLoC'),
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 32,
-                          vertical: 16,
                         ),
-                      ),
-                    ),
-
-                  // Logout Button
-                  if (state is AuthAuthenticated)
-                    ElevatedButton.icon(
-                      onPressed: () {
-                        context.read<AuthBloc>().add(
-                          const AuthLogoutRequested(),
-                        );
-                      },
-                      icon: const Icon(Icons.logout),
-                      label: const Text('Logout'),
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 32,
-                          vertical: 16,
-                        ),
-                        backgroundColor: Colors.red,
-                        foregroundColor: Colors.white,
-                      ),
-                    ),
-
-                  const SizedBox(height: 48),
-
-                  // Info Card
-                  const InfoCard(),
-
-                  const SizedBox(height: 24),
-
-                  // Network Test Button
-                  OutlinedButton.icon(
-                    onPressed: () {
-                      AppRoutes.navigateToNetworkTest(context);
-                    },
-                    icon: const Icon(Icons.network_check),
-                    label: const Text('Test Network Layer'),
-                    style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 24,
-                        vertical: 12,
-                      ),
+                      ],
                     ),
                   ),
                 ],
               ),
             ),
-          );
-        },
+          ],
+        ),
       ),
+    );
+  }
+
+  Widget _buildAuthStatusCard(
+    BuildContext context,
+    AuthState state,
+    bool isAuthenticated,
+    bool isLoading,
+  ) {
+    Color statusColor;
+    IconData statusIcon;
+    String statusText;
+    String statusSubtext;
+
+    if (isLoading) {
+      statusColor = Colors.orange;
+      statusIcon = Icons.hourglass_empty;
+      statusText = 'Loading...';
+      statusSubtext = 'Checking authentication status';
+    } else if (isAuthenticated) {
+      statusColor = Colors.green;
+      statusIcon = Icons.verified_user;
+      statusText = 'Secure Session';
+      statusSubtext = 'Your session is active and secure';
+    } else if (state is AuthError) {
+      statusColor = Colors.red;
+      statusIcon = Icons.error_outline;
+      statusText = 'Authentication Error';
+      statusSubtext = state.message;
+    } else {
+      statusColor = Colors.grey;
+      statusIcon = Icons.lock_open;
+      statusText = 'Not Authenticated';
+      statusSubtext = 'Login to access all features';
+    }
+
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: statusColor.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(statusIcon, color: statusColor, size: 32),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    statusText,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: statusColor,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    statusSubtext,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildQuickActions(
+    BuildContext context,
+    bool isAuthenticated,
+    AuthState state,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          'Quick Actions',
+          style: Theme.of(
+            context,
+          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 12),
+        if (!isAuthenticated)
+          ElevatedButton.icon(
+            onPressed: () => AppRoutes.navigateToLogin(context),
+            icon: const Icon(Icons.login),
+            label: const Text('Login to Your Account'),
+            style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.all(16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          )
+        else ...[
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: () => AppRoutes.navigateToNetworkTest(context),
+                  icon: const Icon(Icons.network_check),
+                  label: const Text('Network Tests'),
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.all(16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    context.read<AuthBloc>().add(const AuthLogoutRequested());
+                  },
+                  icon: const Icon(Icons.logout),
+                  label: const Text('Logout'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.all(16),
+                    backgroundColor: Colors.red,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildFeaturesSection(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Features',
+          style: Theme.of(
+            context,
+          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 12),
+        _buildFeatureCard(
+          context,
+          Icons.security,
+          'Mock Authentication',
+          'Test with 3 demo users without backend',
+          Colors.blue,
+        ),
+        const SizedBox(height: 8),
+        _buildFeatureCard(
+          context,
+          Icons.architecture,
+          'Clean Architecture',
+          'Domain, Data, and Presentation layers',
+          Colors.purple,
+        ),
+        const SizedBox(height: 8),
+        _buildFeatureCard(
+          context,
+          Icons.view_module,
+          'BLoC State Management',
+          'Reactive UI with flutter_bloc',
+          Colors.orange,
+        ),
+        const SizedBox(height: 8),
+        _buildFeatureCard(
+          context,
+          Icons.storage,
+          'Secure Token Storage',
+          'Encrypted storage with auto-refresh',
+          Colors.green,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFeatureCard(
+    BuildContext context,
+    IconData icon,
+    String title,
+    String description,
+    Color color,
+  ) {
+    return Card(
+      elevation: 1,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: ListTile(
+        leading: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(icon, color: color),
+        ),
+        title: Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
+        subtitle: Text(description),
+      ),
+    );
+  }
+
+  Widget _buildArchitectureInfo(BuildContext context) {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  Icons.info_outline,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  'About This App',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'This is a production-ready Flutter app demonstrating Clean Architecture with feature-based packages using Melos for monorepo management.',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                _buildTechChip('Flutter', Colors.blue),
+                _buildTechChip('Clean Architecture', Colors.green),
+                _buildTechChip('BLoC', Colors.purple),
+                _buildTechChip('Melos', Colors.orange),
+                _buildTechChip('Dio', Colors.red),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTechChip(String label, Color color) {
+    return Chip(
+      label: Text(
+        label,
+        style: TextStyle(
+          color: color,
+          fontWeight: FontWeight.w600,
+          fontSize: 12,
+        ),
+      ),
+      backgroundColor: color.withOpacity(0.1),
+      side: BorderSide(color: color.withOpacity(0.3)),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
     );
   }
 }
