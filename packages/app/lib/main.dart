@@ -70,23 +70,27 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => getIt<AuthBloc>()..add(const AuthCheckRequested()),
-      child: MaterialApp(
-        title: 'Clean Architecture App',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-          useMaterial3: true,
-          cardTheme: const CardThemeData(
-            elevation: 2,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(12)),
-            ),
-          ),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) => getIt<AuthBloc>()..add(const AuthCheckRequested()),
         ),
-        initialRoute: AppRoutes.splash,
-        onGenerateRoute: AppRouteGenerator.onGenerateRoute,
+        BlocProvider(
+          create: (_) => ThemeCubit(),
+        ),
+      ],
+      child: BlocBuilder<ThemeCubit, ThemeMode>(
+        builder: (context, themeMode) {
+          return MaterialApp(
+            title: 'Clean Architecture App',
+            debugShowCheckedModeBanner: false,
+            theme: AppLightTheme.theme,
+            darkTheme: AppDarkTheme.theme,
+            themeMode: themeMode,
+            initialRoute: AppRoutes.splash,
+            onGenerateRoute: AppRouteGenerator.onGenerateRoute,
+          );
+        },
       ),
     );
   }

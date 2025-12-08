@@ -90,6 +90,24 @@ class _HomePageState extends State<HomePage> {
               SliverAppBar(
                 expandedHeight: 200,
                 pinned: true,
+                actions: [
+                  // Theme toggle button
+                  BlocBuilder<ThemeCubit, ThemeMode>(
+                    builder: (context, themeMode) {
+                      return IconButton(
+                        icon: Icon(
+                          themeMode == ThemeMode.dark
+                              ? Icons.light_mode
+                              : Icons.dark_mode,
+                        ),
+                        onPressed: () {
+                          context.read<ThemeCubit>().toggleTheme();
+                        },
+                        tooltip: 'Toggle theme',
+                      );
+                    },
+                  ),
+                ],
                 flexibleSpace: FlexibleSpaceBar(
                   title: const Text(
                     'Clean Architecture',
@@ -145,6 +163,11 @@ class _HomePageState extends State<HomePage> {
 
                       // Quick Actions
                       _buildQuickActions(context, isAuthenticated, state),
+
+                      const SizedBox(height: 24),
+
+                      // Theme Demo Section
+                      _buildThemeDemoSection(context),
 
                       const SizedBox(height: 24),
 
@@ -532,6 +555,260 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: color.withOpacity(0.1),
       side: BorderSide(color: color.withOpacity(0.3)),
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+    );
+  }
+
+  Widget _buildThemeDemoSection(BuildContext context) {
+    return BlocBuilder<ThemeCubit, ThemeMode>(
+      builder: (context, themeMode) {
+        return Card(
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.primaryContainer,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Icon(
+                        Icons.palette,
+                        color: Theme.of(context).colorScheme.onPrimaryContainer,
+                        size: 28,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Theme Management',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge
+                                ?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'BLoC-based theme switching with Material 3',
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  'Current Theme Mode',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                // Theme mode selector
+                SegmentedButton<ThemeMode>(
+                  segments: const [
+                    ButtonSegment(
+                      value: ThemeMode.light,
+                      icon: Icon(Icons.light_mode),
+                      label: Text('Light'),
+                    ),
+                    ButtonSegment(
+                      value: ThemeMode.dark,
+                      icon: Icon(Icons.dark_mode),
+                      label: Text('Dark'),
+                    ),
+                    ButtonSegment(
+                      value: ThemeMode.system,
+                      icon: Icon(Icons.settings_brightness),
+                      label: Text('System'),
+                    ),
+                  ],
+                  selected: {themeMode},
+                  onSelectionChanged: (Set<ThemeMode> newSelection) {
+                    context.read<ThemeCubit>().setThemeMode(newSelection.first);
+                  },
+                ),
+                const SizedBox(height: 20),
+                // Theme info
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surfaceVariant,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.info_outline,
+                            size: 20,
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Theme Features',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleSmall
+                                ?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      _buildThemeFeatureItem(
+                        context,
+                        '✓',
+                        'Material 3 Design System',
+                      ),
+                      _buildThemeFeatureItem(
+                        context,
+                        '✓',
+                        'ThemeCubit for state management',
+                      ),
+                      _buildThemeFeatureItem(
+                        context,
+                        '✓',
+                        'Custom theme extensions',
+                      ),
+                      _buildThemeFeatureItem(
+                        context,
+                        '✓',
+                        'Design tokens (colors, spacing, typography)',
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+                // Color palette preview
+                Text(
+                  'Color Palette Preview',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Wrap(
+                  spacing: 12,
+                  runSpacing: 12,
+                  children: [
+                    _buildColorSwatch(
+                      context,
+                      'Primary',
+                      Theme.of(context).colorScheme.primary,
+                    ),
+                    _buildColorSwatch(
+                      context,
+                      'Secondary',
+                      Theme.of(context).colorScheme.secondary,
+                    ),
+                    _buildColorSwatch(
+                      context,
+                      'Tertiary',
+                      Theme.of(context).colorScheme.tertiary,
+                    ),
+                    _buildColorSwatch(
+                      context,
+                      'Error',
+                      Theme.of(context).colorScheme.error,
+                    ),
+                    _buildColorSwatch(
+                      context,
+                      'Success',
+                      Theme.of(context).extension<AppColorsExtension>()?.success ??
+                          Colors.green,
+                    ),
+                    _buildColorSwatch(
+                      context,
+                      'Warning',
+                      Theme.of(context).extension<AppColorsExtension>()?.warning ??
+                          Colors.orange,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildThemeFeatureItem(
+    BuildContext context,
+    String bullet,
+    String text,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            bullet,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: Theme.of(context).colorScheme.primary,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              text,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildColorSwatch(BuildContext context, String label, Color color) {
+    return Column(
+      children: [
+        Container(
+          width: 60,
+          height: 60,
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: Theme.of(context).colorScheme.outline,
+              width: 1,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: color.withOpacity(0.3),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          label,
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
     );
   }
 }

@@ -18,3 +18,5 @@ export 'src/routes/api_routes.dart';
 export 'src/routes/app_routes.dart';
 // Storage
 export 'src/storage/token_storage.dart';
+// Theme
+export 'src/theme/theme.dart';
