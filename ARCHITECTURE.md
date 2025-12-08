@@ -10,41 +10,124 @@ This project follows a **feature-based modular architecture** where each feature
 
 ```
 packages/
-├── core/                    # Shared infrastructure
-│   ├── network/            # DioClient, interceptors, API routes
-│   └── storage/            # Token storage, secure storage
+├── core/                                          # Shared infrastructure
+│   ├── lib/
+│   │   ├── core.dart                             # Barrel export file
+│   │   └── src/
+│   │       ├── network/                          # Network layer
+│   │       │   ├── dio_client.dart              # Main HTTP client (singleton)
+│   │       │   ├── network_config.dart          # Environment & configuration
+│   │       │   ├── api_exceptions.dart          # Custom exception hierarchy
+│   │       │   ├── api_response.dart            # Response wrappers & Result type
+│   │       │   ├── interceptors/                # Dio interceptors
+│   │       │   │   ├── auth_interceptor.dart    # Bearer token injection
+│   │       │   │   ├── refresh_token_interceptor.dart  # Token refresh + queue
+│   │       │   │   ├── retry_interceptor.dart   # Auto retry with backoff
+│   │       │   │   ├── error_interceptor.dart   # Error mapping
+│   │       │   │   └── logging_interceptor.dart # Debug logging
+│   │       │   └── utils/
+│   │       │       └── multipart_helper.dart    # File upload utilities
+│   │       ├── routes/                           # Routing
+│   │       │   ├── api_routes.dart              # API endpoint definitions
+│   │       │   └── app_routes.dart              # App navigation routes
+│   │       └── storage/                          # Storage
+│   │           └── token_storage.dart           # Token storage interface
+│   └── pubspec.yaml
 │
-├── features_auth/          # Authentication Feature Module
-│   ├── domain/             # Business logic (pure Dart)
-│   │   ├── entities/       # AuthTokenEntity
-│   │   ├── repositories/   # AuthRepository interface
-│   │   └── usecases/       # LoginUseCase, LogoutUseCase, GetCurrentUserUseCase
-│   ├── data/               # Data layer implementation
-│   │   ├── models/         # AuthTokenModel (Entity → Model mapping)
-│   │   ├── datasources/    # AuthRemoteDataSource (API calls)
-│   │   └── repositories/   # AuthRepositoryImpl
-│   └── presentation/       # UI layer
-│       ├── bloc/           # AuthBloc, AuthEvent, AuthState
-│       ├── pages/          # LoginPage
-│       └── widgets/        # LoginForm
+├── features_auth/                                 # Authentication Feature
+│   ├── lib/
+│   │   ├── features_auth.dart                    # Barrel export file
+│   │   ├── domain/                               # Business logic (pure Dart)
+│   │   │   ├── entities/
+│   │   │   │   └── auth_token_entity.dart       # AuthToken entity
+│   │   │   ├── repositories/
+│   │   │   │   └── auth_repository.dart         # Auth repository interface
+│   │   │   └── usecases/
+│   │   │       ├── login_usecase.dart           # Login use case
+│   │   │       ├── logout_usecase.dart          # Logout use case
+│   │   │       └── get_current_user_usecase.dart # Get current user
+│   │   ├── data/                                 # Data layer
+│   │   │   ├── models/
+│   │   │   │   └── auth_token_model.dart        # AuthToken model (DTO)
+│   │   │   ├── datasources/
+│   │   │   │   └── remote/
+│   │   │   │       └── auth_remote_datasource.dart # API calls
+│   │   │   └── repositories/
+│   │   │       └── auth_repository_impl.dart    # Repository implementation
+│   │   └── presentation/                         # UI layer
+│   │       ├── bloc/
+│   │       │   ├── auth_bloc.dart               # Auth BLoC
+│   │       │   ├── auth_event.dart              # Auth events
+│   │       │   └── auth_state.dart              # Auth states
+│   │       ├── pages/
+│   │       │   └── login_page.dart              # Login page
+│   │       └── widgets/
+│   │           └── login_form.dart              # Login form widget
+│   └── pubspec.yaml
 │
-├── features_user/          # User Feature Module
-│   ├── domain/             # Business logic (pure Dart)
-│   │   ├── entities/       # UserEntity
-│   │   ├── repositories/   # UserRepository interface
-│   │   └── usecases/       # GetUserByIdUseCase
-│   ├── data/               # Data layer implementation
-│   │   ├── models/         # UserModel
-│   │   ├── datasources/    # UserRemoteDataSource
-│   │   └── repositories/   # UserRepositoryImpl
-│   └── presentation/       # UI layer (placeholder for future)
-│       ├── bloc/           # UserBloc (to be implemented)
-│       ├── pages/          # User profile pages (to be implemented)
-│       └── widgets/        # User widgets (to be implemented)
+├── features_user/                                 # User Feature
+│   ├── lib/
+│   │   ├── features_user.dart                    # Barrel export file
+│   │   ├── domain/                               # Business logic (pure Dart)
+│   │   │   ├── entities/
+│   │   │   │   └── user_entity.dart             # User entity
+│   │   │   ├── repositories/
+│   │   │   │   └── user_repository.dart         # User repository interface
+│   │   │   └── usecases/
+│   │   │       └── get_user_by_id_usecase.dart  # Get user by ID
+│   │   ├── data/                                 # Data layer
+│   │   │   ├── models/
+│   │   │   │   └── user_model.dart              # User model (DTO)
+│   │   │   ├── datasources/
+│   │   │   │   └── remote/
+│   │   │   │       └── user_remote_datasource.dart # API calls
+│   │   │   └── repositories/
+│   │   │       └── user_repository_impl.dart    # Repository implementation
+│   │   └── presentation/                         # UI layer (placeholder)
+│   │       ├── bloc/                            # (to be implemented)
+│   │       ├── pages/                           # (to be implemented)
+│   │       └── widgets/                         # (to be implemented)
+│   └── pubspec.yaml
 │
-└── app/                    # Main application
-    ├── main.dart           # App entry point
-    └── injection_container.dart  # Dependency injection setup
+├── features_home/                                 # Home Feature (Network Testing)
+│   ├── lib/
+│   │   ├── features_home.dart                    # Barrel export file
+│   │   ├── main.dart                             # Entry point (for testing)
+│   │   ├── domain/                               # Business logic (pure Dart)
+│   │   │   ├── entities/
+│   │   │   │   └── network_test_entity.dart     # NetworkTest entity
+│   │   │   ├── repositories/
+│   │   │   │   └── network_test_repository.dart # NetworkTest repository interface
+│   │   │   └── usecases/
+│   │   │       └── run_network_tests_usecase.dart # Run network tests
+│   │   ├── data/                                 # Data layer
+│   │   │   ├── models/
+│   │   │   │   └── network_test_model.dart      # NetworkTest model (DTO)
+│   │   │   ├── datasources/
+│   │   │   │   └── network_test_datasource.dart # Network test API calls
+│   │   │   └── repositories/
+│   │   │       └── network_test_repository_impl.dart # Repository implementation
+│   │   └── presentation/                         # UI layer
+│   │       ├── bloc/
+│   │       │   ├── network_test_bloc.dart       # NetworkTest BLoC
+│   │       │   ├── network_test_event.dart      # NetworkTest events
+│   │       │   └── network_test_state.dart      # NetworkTest states
+│   │       ├── pages/
+│   │       │   ├── home_page.dart               # Home page
+│   │       │   ├── network_test_page.dart       # Network test page (simple)
+│   │       │   └── network_test_page_bloc.dart  # Network test page (with BLoC)
+│   │       └── widgets/
+│   │           ├── auth_status_card.dart        # Auth status widget
+│   │           └── info_card.dart               # Info card widget
+│   └── pubspec.yaml
+│
+└── app/                                           # Main Application
+    ├── lib/
+    │   ├── main.dart                             # App entry point
+    │   ├── injection_container.dart              # Dependency injection (GetIt)
+    │   └── routes/
+    │       └── app_route_generator.dart          # Route generation & BLoC providers
+    └── pubspec.yaml
 ```
 
 ## 🎯 Key Principles
