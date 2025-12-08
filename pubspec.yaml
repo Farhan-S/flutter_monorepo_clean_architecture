@@ -2,7 +2,7 @@ name: dio_network_config
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -34,9 +34,26 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
+
+  # Network
   dio: ^5.9.0
+
+  # Storage
   flutter_secure_storage: ^9.2.4
   shared_preferences: ^2.5.3
+
+  # State Management
+  flutter_bloc: ^8.1.6
+  bloc: ^8.1.4
+  equatable: ^2.0.7
+
+  # Dependency Injection
+  get_it: ^8.0.2
+  injectable: ^2.5.0
+
+  # Utilities
+  dartz: ^0.10.1 # For Either type (functional programming)
+  logger: ^2.5.0 # Better logging
 
 dev_dependencies:
   flutter_test:
@@ -49,12 +66,19 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^5.0.0
 
+  # Code Generation
+  build_runner: ^2.4.13
+  injectable_generator: ^2.6.2
+
+  # Testing
+  mockito: ^5.4.4
+  bloc_test: ^9.1.7
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter packages.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

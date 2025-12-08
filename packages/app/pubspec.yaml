@@ -1,0 +1,38 @@
+name: app
+description: Main Flutter application with dependency injection and routing
+version: 1.0.0
+publish_to: none
+
+environment:
+  sdk: ^3.9.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+
+  # Local packages
+  core:
+    path: ../core
+  features_auth:
+    path: ../features_auth
+  features_user:
+    path: ../features_user
+
+  # State Management
+  flutter_bloc: ^8.1.6
+
+  # Dependency Injection
+  get_it: ^8.0.2
+
+  # Network
+  dio: ^5.9.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  mockito: ^5.4.4
+
+flutter:
+  uses-material-design: true

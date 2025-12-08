@@ -1,0 +1,35 @@
+name: dio_network_config
+
+packages:
+  - packages/**
+
+scripts:
+  # Clean all packages
+  clean:
+    run: melos exec -- "flutter clean"
+    description: Clean all packages
+
+  # Get dependencies
+  get:
+    run: melos exec -- "flutter pub get"
+    description: Get dependencies for all packages
+
+  # Analyze all packages
+  analyze:
+    run: melos exec -- "flutter analyze --no-fatal-infos"
+    description: Analyze all packages
+
+  # Format code
+  format:
+    run: melos exec -- "dart format ."
+    description: Format all Dart code
+
+  # Run tests
+  test:
+    run: melos exec --dir-exists=test -- "flutter test"
+    description: Run tests in all packages
+
+  # Run app
+  run:app:
+    run: cd packages/app && flutter run
+    description: Run the main application
