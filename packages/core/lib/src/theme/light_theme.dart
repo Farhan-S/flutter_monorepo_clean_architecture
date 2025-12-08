@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'tokens/colors.dart';
-import 'tokens/typography.dart';
-import 'tokens/radius.dart';
+
 import 'theme_extensions/app_colors.dart';
+import 'theme_extensions/app_radius.dart';
 import 'theme_extensions/app_spacing.dart';
 import 'theme_extensions/app_typography.dart';
-import 'theme_extensions/app_radius.dart';
+import 'tokens/colors.dart';
+import 'tokens/radius.dart';
+import 'tokens/typography.dart';
 
 /// Light theme configuration
 class AppLightTheme {
@@ -48,7 +49,7 @@ class AppLightTheme {
       colorScheme: colorScheme,
       brightness: Brightness.light,
       textTheme: AppTypography.createTextTheme(),
-      
+
       // Extensions
       extensions: [
         AppColorsExtension.light(),
@@ -87,10 +88,7 @@ class AppLightTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppRadius.button),
           ),
-          padding: const EdgeInsets.symmetric(
-            horizontal: 24,
-            vertical: 12,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
           textStyle: AppTypography.button,
         ),
       ),
@@ -101,10 +99,7 @@ class AppLightTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppRadius.button),
           ),
-          padding: const EdgeInsets.symmetric(
-            horizontal: 24,
-            vertical: 12,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
           side: BorderSide(color: colorScheme.outline),
           textStyle: AppTypography.button,
         ),
@@ -116,10 +111,7 @@ class AppLightTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppRadius.button),
           ),
-          padding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 8,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           textStyle: AppTypography.button,
         ),
       ),
@@ -155,9 +147,7 @@ class AppLightTheme {
         hintStyle: AppTypography.bodyMedium.copyWith(
           color: colorScheme.onSurfaceVariant.withOpacity(0.6),
         ),
-        errorStyle: AppTypography.error.copyWith(
-          color: colorScheme.error,
-        ),
+        errorStyle: AppTypography.error.copyWith(color: colorScheme.error),
       ),
 
       // Chip theme
@@ -221,10 +211,7 @@ class AppLightTheme {
       ),
 
       // Icon theme
-      iconTheme: IconThemeData(
-        color: colorScheme.onSurface,
-        size: 24,
-      ),
+      iconTheme: IconThemeData(color: colorScheme.onSurface, size: 24),
 
       // Switch theme
       switchTheme: SwitchThemeData(
@@ -250,9 +237,7 @@ class AppLightTheme {
           }
           return null;
         }),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(4),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
       ),
 
       // Radio theme

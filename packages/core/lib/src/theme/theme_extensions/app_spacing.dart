@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../tokens/spacing.dart';
 
 /// Theme extension for spacing
@@ -67,14 +68,22 @@ class AppSpacingExtension extends ThemeExtension<AppSpacingExtension> {
     if (other is! AppSpacingExtension) return this;
 
     return AppSpacingExtension(
-      pageHorizontal: lerpDouble(pageHorizontal, other.pageHorizontal, t) ?? pageHorizontal,
-      pageVertical: lerpDouble(pageVertical, other.pageVertical, t) ?? pageVertical,
-      sectionSpacing: lerpDouble(sectionSpacing, other.sectionSpacing, t) ?? sectionSpacing,
+      pageHorizontal:
+          lerpDouble(pageHorizontal, other.pageHorizontal, t) ?? pageHorizontal,
+      pageVertical:
+          lerpDouble(pageVertical, other.pageVertical, t) ?? pageVertical,
+      sectionSpacing:
+          lerpDouble(sectionSpacing, other.sectionSpacing, t) ?? sectionSpacing,
       cardPadding: lerpDouble(cardPadding, other.cardPadding, t) ?? cardPadding,
-      listItemPadding: lerpDouble(listItemPadding, other.listItemPadding, t) ?? listItemPadding,
-      buttonPadding: lerpDouble(buttonPadding, other.buttonPadding, t) ?? buttonPadding,
-      inputPadding: lerpDouble(inputPadding, other.inputPadding, t) ?? inputPadding,
-      dialogPadding: lerpDouble(dialogPadding, other.dialogPadding, t) ?? dialogPadding,
+      listItemPadding:
+          lerpDouble(listItemPadding, other.listItemPadding, t) ??
+          listItemPadding,
+      buttonPadding:
+          lerpDouble(buttonPadding, other.buttonPadding, t) ?? buttonPadding,
+      inputPadding:
+          lerpDouble(inputPadding, other.inputPadding, t) ?? inputPadding,
+      dialogPadding:
+          lerpDouble(dialogPadding, other.dialogPadding, t) ?? dialogPadding,
     );
   }
 

@@ -49,4 +49,3 @@ class ThemeCubit extends Cubit<ThemeMode> {
     emit(ThemeMode.system);
   }
 }
-

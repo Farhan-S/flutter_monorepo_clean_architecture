@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../tokens/colors.dart';
 
 /// Theme extension for custom colors
@@ -141,7 +142,8 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension> {
       neutralVariant: neutralVariant ?? this.neutralVariant,
       cardBackground: cardBackground ?? this.cardBackground,
       dialogBackground: dialogBackground ?? this.dialogBackground,
-      bottomSheetBackground: bottomSheetBackground ?? this.bottomSheetBackground,
+      bottomSheetBackground:
+          bottomSheetBackground ?? this.bottomSheetBackground,
       divider: divider ?? this.divider,
       border: border ?? this.border,
     );
@@ -153,13 +155,29 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension> {
 
     return AppColorsExtension(
       success: Color.lerp(success, other.success, t)!,
-      successContainer: Color.lerp(successContainer, other.successContainer, t)!,
+      successContainer: Color.lerp(
+        successContainer,
+        other.successContainer,
+        t,
+      )!,
       onSuccess: Color.lerp(onSuccess, other.onSuccess, t)!,
-      onSuccessContainer: Color.lerp(onSuccessContainer, other.onSuccessContainer, t)!,
+      onSuccessContainer: Color.lerp(
+        onSuccessContainer,
+        other.onSuccessContainer,
+        t,
+      )!,
       warning: Color.lerp(warning, other.warning, t)!,
-      warningContainer: Color.lerp(warningContainer, other.warningContainer, t)!,
+      warningContainer: Color.lerp(
+        warningContainer,
+        other.warningContainer,
+        t,
+      )!,
       onWarning: Color.lerp(onWarning, other.onWarning, t)!,
-      onWarningContainer: Color.lerp(onWarningContainer, other.onWarningContainer, t)!,
+      onWarningContainer: Color.lerp(
+        onWarningContainer,
+        other.onWarningContainer,
+        t,
+      )!,
       info: Color.lerp(info, other.info, t)!,
       infoContainer: Color.lerp(infoContainer, other.infoContainer, t)!,
       onInfo: Color.lerp(onInfo, other.onInfo, t)!,
@@ -167,8 +185,16 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension> {
       neutral: Color.lerp(neutral, other.neutral, t)!,
       neutralVariant: Color.lerp(neutralVariant, other.neutralVariant, t)!,
       cardBackground: Color.lerp(cardBackground, other.cardBackground, t)!,
-      dialogBackground: Color.lerp(dialogBackground, other.dialogBackground, t)!,
-      bottomSheetBackground: Color.lerp(bottomSheetBackground, other.bottomSheetBackground, t)!,
+      dialogBackground: Color.lerp(
+        dialogBackground,
+        other.dialogBackground,
+        t,
+      )!,
+      bottomSheetBackground: Color.lerp(
+        bottomSheetBackground,
+        other.bottomSheetBackground,
+        t,
+      )!,
       divider: Color.lerp(divider, other.divider, t)!,
       border: Color.lerp(border, other.border, t)!,
     );

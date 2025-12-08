@@ -592,12 +592,8 @@ class _HomePageState extends State<HomePage> {
                         children: [
                           Text(
                             'Theme Management',
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleLarge
-                                ?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: Theme.of(context).textTheme.titleLarge
+                                ?.copyWith(fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(height: 4),
                           Text(
@@ -657,17 +653,15 @@ class _HomePageState extends State<HomePage> {
                           Icon(
                             Icons.info_outline,
                             size: 20,
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurfaceVariant,
                           ),
                           const SizedBox(width: 8),
                           Text(
                             'Theme Features',
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleSmall
-                                ?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: Theme.of(context).textTheme.titleSmall
+                                ?.copyWith(fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),
@@ -731,13 +725,17 @@ class _HomePageState extends State<HomePage> {
                     _buildColorSwatch(
                       context,
                       'Success',
-                      Theme.of(context).extension<AppColorsExtension>()?.success ??
+                      Theme.of(
+                            context,
+                          ).extension<AppColorsExtension>()?.success ??
                           Colors.green,
                     ),
                     _buildColorSwatch(
                       context,
                       'Warning',
-                      Theme.of(context).extension<AppColorsExtension>()?.warning ??
+                      Theme.of(
+                            context,
+                          ).extension<AppColorsExtension>()?.warning ??
                           Colors.orange,
                     ),
                   ],
@@ -769,10 +767,7 @@ class _HomePageState extends State<HomePage> {
           ),
           const SizedBox(width: 8),
           Expanded(
-            child: Text(
-              text,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
+            child: Text(text, style: Theme.of(context).textTheme.bodyMedium),
           ),
         ],
       ),
@@ -804,9 +799,9 @@ class _HomePageState extends State<HomePage> {
         const SizedBox(height: 8),
         Text(
           label,
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600),
         ),
       ],
     );

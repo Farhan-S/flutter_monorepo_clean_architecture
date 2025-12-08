@@ -75,9 +75,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (_) => getIt<AuthBloc>()..add(const AuthCheckRequested()),
         ),
-        BlocProvider(
-          create: (_) => ThemeCubit(),
-        ),
+        BlocProvider(create: (_) => ThemeCubit()),
       ],
       child: BlocBuilder<ThemeCubit, ThemeMode>(
         builder: (context, themeMode) {
