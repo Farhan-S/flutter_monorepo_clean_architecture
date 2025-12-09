@@ -493,6 +493,41 @@ Features:
 
 See [ARCHITECTURE.md](./ARCHITECTURE.md) for detailed guide.
 
+## 🛠️ Maloc CLI - Feature Generator
+
+**Maloc** (Melos + BLoC) is a custom CLI tool to quickly generate feature packages with complete Clean Architecture structure.
+
+### Installation
+
+```bash
+cd cli
+dart pub global activate --source path .
+```
+
+### Usage
+
+```bash
+# Create a new feature
+maloc create --name products
+maloc create -n user_profile
+
+# Show help
+maloc --help
+```
+
+### What Gets Generated
+
+Complete feature package with:
+
+- ✅ Domain layer (entities, repositories, use cases)
+- ✅ Data layer (models, datasources, repository implementations)
+- ✅ Presentation layer (BLoC with events/states, pages)
+- ✅ Barrel export file
+- ✅ pubspec.yaml with all dependencies
+- ✅ Proper imports and boilerplate code
+
+See **[CLI Documentation](./cli/README.md)** for complete guide.
+
 ## 🔐 Environment Configuration
 
 The app uses **compile-time constants** via `String.fromEnvironment()`:
@@ -545,6 +580,7 @@ melos test        # Run tests in all packages
 
 - **[ARCHITECTURE.md](./ARCHITECTURE.md)** - Complete architecture guide ✅
 - **[ROUTING.md](./ROUTING.md)** - Routing system documentation
+- **[CLI README](./cli/README.md)** - Maloc CLI documentation for feature generation ✅
 
 ## 🎯 Current Features
 
