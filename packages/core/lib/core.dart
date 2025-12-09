@@ -1,5 +1,7 @@
 library;
 
+// Localization
+export 'src/localization/localization.dart';
 export 'src/network/api_exceptions.dart';
 export 'src/network/api_response.dart';
 // Network exports
@@ -16,6 +18,7 @@ export 'src/network/utils/multipart_helper.dart';
 // Routes
 export 'src/routes/api_routes.dart';
 export 'src/routes/app_routes.dart';
+export 'src/storage/locale_storage.dart';
 // Storage
 export 'src/storage/token_storage.dart';
 // Theme

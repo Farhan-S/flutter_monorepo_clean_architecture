@@ -1,0 +1,182 @@
+{
+  "@@locale": "en",
+  "appTitle": "Clean Architecture App",
+  "@appTitle": {
+    "description": "The application title"
+  },
+  
+  "welcome": "Welcome",
+  "@welcome": {
+    "description": "Welcome message"
+  },
+  
+  "login": "Login",
+  "@login": {
+    "description": "Login button text"
+  },
+  
+  "logout": "Logout",
+  "@logout": {
+    "description": "Logout button text"
+  },
+  
+  "email": "Email",
+  "@email": {
+    "description": "Email field label"
+  },
+  
+  "password": "Password",
+  "@password": {
+    "description": "Password field label"
+  },
+  
+  "enterEmail": "Enter your email",
+  "@enterEmail": {
+    "description": "Email field hint"
+  },
+  
+  "enterPassword": "Enter your password",
+  "@enterPassword": {
+    "description": "Password field hint"
+  },
+  
+  "forgotPassword": "Forgot Password?",
+  "@forgotPassword": {
+    "description": "Forgot password link"
+  },
+  
+  "dontHaveAccount": "Don't have an account?",
+  "@dontHaveAccount": {
+    "description": "Sign up prompt"
+  },
+  
+  "signUp": "Sign Up",
+  "@signUp": {
+    "description": "Sign up button text"
+  },
+  
+  "home": "Home",
+  "@home": {
+    "description": "Home page title"
+  },
+  
+  "settings": "Settings",
+  "@settings": {
+    "description": "Settings page title"
+  },
+  
+  "language": "Language",
+  "@language": {
+    "description": "Language settings"
+  },
+  
+  "theme": "Theme",
+  "@theme": {
+    "description": "Theme settings"
+  },
+  
+  "lightMode": "Light Mode",
+  "@lightMode": {
+    "description": "Light theme option"
+  },
+  
+  "darkMode": "Dark Mode",
+  "@darkMode": {
+    "description": "Dark theme option"
+  },
+  
+  "systemDefault": "System Default",
+  "@systemDefault": {
+    "description": "System default option"
+  },
+  
+  "authenticated": "Authenticated",
+  "@authenticated": {
+    "description": "Authentication status - authenticated"
+  },
+  
+  "notAuthenticated": "Not Authenticated",
+  "@notAuthenticated": {
+    "description": "Authentication status - not authenticated"
+  },
+  
+  "loading": "Loading...",
+  "@loading": {
+    "description": "Loading indicator text"
+  },
+  
+  "error": "Error",
+  "@error": {
+    "description": "Generic error text"
+  },
+  
+  "retry": "Retry",
+  "@retry": {
+    "description": "Retry button text"
+  },
+  
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Cancel button text"
+  },
+  
+  "save": "Save",
+  "@save": {
+    "description": "Save button text"
+  },
+  
+  "next": "Next",
+  "@next": {
+    "description": "Next button text"
+  },
+  
+  "skip": "Skip",
+  "@skip": {
+    "description": "Skip button text"
+  },
+  
+  "getStarted": "Get Started",
+  "@getStarted": {
+    "description": "Get started button text"
+  },
+  
+  "onboardingTitle1": "Welcome to Clean Architecture",
+  "@onboardingTitle1": {
+    "description": "First onboarding page title"
+  },
+  
+  "onboardingDesc1": "Build scalable and maintainable Flutter apps with proper architecture patterns and separation of concerns.",
+  "@onboardingDesc1": {
+    "description": "First onboarding page description"
+  },
+  
+  "onboardingTitle2": "Modular Package Structure",
+  "@onboardingTitle2": {
+    "description": "Second onboarding page title"
+  },
+  
+  "onboardingDesc2": "Each feature is isolated in its own package with domain, data, and presentation layers using Melos.",
+  "@onboardingDesc2": {
+    "description": "Second onboarding page description"
+  },
+  
+  "onboardingTitle3": "BLoC State Management",
+  "@onboardingTitle3": {
+    "description": "Third onboarding page title"
+  },
+  
+  "onboardingDesc3": "Manage your app state reactively with BLoC pattern, ensuring predictable and testable code.",
+  "@onboardingDesc3": {
+    "description": "Third onboarding page description"
+  },
+  
+  "onboardingTitle4": "Robust Network Layer",
+  "@onboardingTitle4": {
+    "description": "Fourth onboarding page title"
+  },
+  
+  "onboardingDesc4": "Built-in error handling, retry logic, token refresh, and interceptors for seamless API communication.",
+  "@onboardingDesc4": {
+    "description": "Fourth onboarding page description"
+  }
+}

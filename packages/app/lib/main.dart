@@ -74,17 +74,32 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(create: (_) => getIt<AuthBloc>()),
         BlocProvider(create: (_) => ThemeCubit()),
+        BlocProvider(
+          create: (_) =>
+              getIt<LocalizationBloc>()..add(const LoadSavedLocaleEvent()),
+        ),
       ],
-      child: BlocBuilder<ThemeCubit, ThemeMode>(
-        builder: (context, themeMode) {
-          return MaterialApp(
-            title: 'Clean Architecture App',
-            debugShowCheckedModeBanner: false,
-            theme: AppLightTheme.theme,
-            darkTheme: AppDarkTheme.theme,
-            themeMode: themeMode,
-            initialRoute: AppRoutes.splash,
-            onGenerateRoute: AppRouteGenerator.onGenerateRoute,
+      child: BlocBuilder<LocalizationBloc, LocalizationState>(
+        builder: (context, localeState) {
+          final locale = localeState is LocalizationLoaded
+              ? localeState.locale.toLocale()
+              : null;
+
+          return BlocBuilder<ThemeCubit, ThemeMode>(
+            builder: (context, themeMode) {
+              return MaterialApp(
+                title: 'Clean Architecture App',
+                debugShowCheckedModeBanner: false,
+                theme: AppLightTheme.theme,
+                darkTheme: AppDarkTheme.theme,
+                themeMode: themeMode,
+                locale: locale,
+                supportedLocales: AppLocale.supportedFlutterLocales,
+                localizationsDelegates: AppLocalizations.localizationsDelegates,
+                initialRoute: AppRoutes.splash,
+                onGenerateRoute: AppRouteGenerator.onGenerateRoute,
+              );
+            },
           );
         },
       ),

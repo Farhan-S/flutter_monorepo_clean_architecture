@@ -21,6 +21,11 @@ Future<void> setupDependencyInjection() async {
   // Token Storage - Singleton
   getIt.registerLazySingleton<TokenStorage>(() => SecureTokenStorage());
 
+  // Locale Storage - Singleton
+  getIt.registerLazySingleton<LocaleStorage>(
+    () => LocaleStorage(getIt<SharedPreferences>()),
+  );
+
   // DioClient - Singleton
   getIt.registerLazySingleton<DioClient>(() => DioClient());
 
@@ -45,13 +50,19 @@ Future<void> setupDependencyInjection() async {
   getIt.registerLazySingleton<AuthRepository>(
     () => AuthRepositoryImpl(
       // remoteDataSource: getIt<AuthRemoteDataSource>(), // Uncomment when using real API
-      mockDataSource: getIt<AuthMockDataSource>(), // Comment out when using real API
+      mockDataSource:
+          getIt<AuthMockDataSource>(), // Comment out when using real API
       tokenStorage: getIt<TokenStorage>(),
     ),
   );
 
   getIt.registerLazySingleton<UserRepository>(
     () => UserRepositoryImpl(getIt<UserRemoteDataSource>()),
+  );
+
+  // Locale Repository
+  getIt.registerLazySingleton<LocaleRepository>(
+    () => LocaleRepositoryImpl(getIt<LocaleStorage>()),
   );
 
   // ==================== Domain Layer ====================
@@ -71,6 +82,15 @@ Future<void> setupDependencyInjection() async {
 
   getIt.registerLazySingleton<GetUserByIdUseCase>(
     () => GetUserByIdUseCase(getIt<UserRepository>()),
+  );
+
+  // Localization Use Cases
+  getIt.registerLazySingleton<GetSavedLocaleUseCase>(
+    () => GetSavedLocaleUseCase(getIt<LocaleRepository>()),
+  );
+
+  getIt.registerLazySingleton<SaveLocaleUseCase>(
+    () => SaveLocaleUseCase(getIt<LocaleRepository>()),
   );
 
   // ==================== Features Home ====================
@@ -163,6 +183,14 @@ Future<void> setupDependencyInjection() async {
     () => OnboardingBloc(
       repository: getIt<OnboardingRepository>(),
       completeOnboardingUseCase: getIt<CompleteOnboardingUseCase>(),
+    ),
+  );
+
+  // Localization BLoC - Factory
+  getIt.registerFactory<LocalizationBloc>(
+    () => LocalizationBloc(
+      getSavedLocaleUseCase: getIt<GetSavedLocaleUseCase>(),
+      saveLocaleUseCase: getIt<SaveLocaleUseCase>(),
     ),
   );
 }

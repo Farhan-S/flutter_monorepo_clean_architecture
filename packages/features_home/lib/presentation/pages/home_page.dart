@@ -54,8 +54,8 @@ class _HomePageState extends State<HomePage> {
           // Handle logout success
           if (state is AuthUnauthenticated) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Logged out successfully'),
+              SnackBar(
+                content: Text(AppLocalizations.of(context).logout),
                 backgroundColor: Colors.orange,
                 behavior: SnackBarBehavior.floating,
               ),
@@ -109,9 +109,9 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ],
                 flexibleSpace: FlexibleSpaceBar(
-                  title: const Text(
-                    'Clean Architecture',
-                    style: TextStyle(
+                  title: Text(
+                    AppLocalizations.of(context).appTitle,
+                    style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       shadows: [Shadow(blurRadius: 10, color: Colors.black26)],
                     ),
@@ -168,6 +168,11 @@ class _HomePageState extends State<HomePage> {
 
                       // Theme Demo Section
                       _buildThemeDemoSection(context),
+
+                      const SizedBox(height: 24),
+
+                      // Language Selector Section
+                      _buildLanguageSection(context),
 
                       const SizedBox(height: 24),
 
@@ -375,7 +380,7 @@ class _HomePageState extends State<HomePage> {
           ElevatedButton.icon(
             onPressed: () => AppRoutes.navigateToLogin(context),
             icon: const Icon(Icons.login),
-            label: const Text('Login to Your Account'),
+            label: Text(AppLocalizations.of(context).login),
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.all(16),
               shape: RoundedRectangleBorder(
@@ -406,7 +411,7 @@ class _HomePageState extends State<HomePage> {
                     context.read<AuthBloc>().add(const AuthLogoutRequested());
                   },
                   icon: const Icon(Icons.logout),
-                  label: const Text('Logout'),
+                  label: Text(AppLocalizations.of(context).logout),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.all(16),
                     backgroundColor: Colors.red,
@@ -615,21 +620,21 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(height: 12),
                 // Theme mode selector
                 SegmentedButton<ThemeMode>(
-                  segments: const [
+                  segments: [
                     ButtonSegment(
                       value: ThemeMode.light,
-                      icon: Icon(Icons.light_mode),
-                      label: Text('Light'),
+                      icon: const Icon(Icons.light_mode),
+                      label: Text(AppLocalizations.of(context).lightMode),
                     ),
                     ButtonSegment(
                       value: ThemeMode.dark,
-                      icon: Icon(Icons.dark_mode),
-                      label: Text('Dark'),
+                      icon: const Icon(Icons.dark_mode),
+                      label: Text(AppLocalizations.of(context).darkMode),
                     ),
                     ButtonSegment(
                       value: ThemeMode.system,
-                      icon: Icon(Icons.settings_brightness),
-                      label: Text('System'),
+                      icon: const Icon(Icons.settings_brightness),
+                      label: Text(AppLocalizations.of(context).systemDefault),
                     ),
                   ],
                   selected: {themeMode},
@@ -804,6 +809,185 @@ class _HomePageState extends State<HomePage> {
           ).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600),
         ),
       ],
+    );
+  }
+
+  Widget _buildLanguageSection(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    
+    return BlocBuilder<LocalizationBloc, LocalizationState>(
+      builder: (context, localeState) {
+        final currentLocale = localeState is LocalizationLoaded
+            ? localeState.locale
+            : AppLocale.english;
+
+        return Card(
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.secondaryContainer,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Icon(
+                        Icons.language,
+                        color: Theme.of(context).colorScheme.onSecondaryContainer,
+                        size: 28,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            l10n.language,
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge
+                                ?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'Select your preferred language',
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  'Current Language',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                // Language selector buttons
+                ...AppLocale.supportedLocales.map((locale) {
+                  final isSelected = currentLocale.languageCode == locale.languageCode;
+                  
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: InkWell(
+                      onTap: () {
+                        context.read<LocalizationBloc>().add(
+                          ChangeLocaleEvent(locale),
+                        );
+                      },
+                      borderRadius: BorderRadius.circular(12),
+                      child: Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? Theme.of(context).colorScheme.primaryContainer
+                              : Theme.of(context).colorScheme.surfaceVariant,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: isSelected
+                                ? Theme.of(context).colorScheme.primary
+                                : Colors.transparent,
+                            width: 2,
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              isSelected
+                                  ? Icons.radio_button_checked
+                                  : Icons.radio_button_unchecked,
+                              color: isSelected
+                                  ? Theme.of(context).colorScheme.primary
+                                  : Theme.of(context).colorScheme.onSurfaceVariant,
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    locale.displayName,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium
+                                        ?.copyWith(
+                                      fontWeight: isSelected
+                                          ? FontWeight.bold
+                                          : FontWeight.normal,
+                                      color: isSelected
+                                          ? Theme.of(context).colorScheme.onPrimaryContainer
+                                          : null,
+                                    ),
+                                  ),
+                                  Text(
+                                    '${locale.languageCode}${locale.countryCode != null ? '_${locale.countryCode}' : ''}',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall
+                                        ?.copyWith(
+                                      color: isSelected
+                                          ? Theme.of(context).colorScheme.onPrimaryContainer
+                                          : Theme.of(context).colorScheme.onSurfaceVariant,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            if (isSelected)
+                              Icon(
+                                Icons.check_circle,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
+                const SizedBox(height: 16),
+                // Info container
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surfaceVariant,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.info_outline,
+                        size: 20,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          'Language preference is saved locally and will persist across app restarts.',
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
