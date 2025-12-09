@@ -30,8 +30,45 @@ packages/
 │   │       ├── routes/                           # Routing
 │   │       │   ├── api_routes.dart              # API endpoint definitions
 │   │       │   └── app_routes.dart              # App navigation routes
-│   │       └── storage/                          # Storage
-│   │           └── token_storage.dart           # Token storage interface
+│   │       ├── storage/                          # Storage
+│   │       │   ├── token_storage.dart           # Token storage interface
+│   │       │   └── locale_storage.dart          # Locale storage (SharedPreferences)
+│   │       ├── localization/                     # Localization system (i18n)
+│   │       │   ├── domain/                       # Business logic
+│   │       │   │   ├── entities/
+│   │       │   │   │   └── app_locale.dart      # AppLocale entity (EN, BN, ES)
+│   │       │   │   ├── repositories/
+│   │       │   │   │   └── locale_repository.dart # Locale repository interface
+│   │       │   │   └── usecases/
+│   │       │   │       ├── get_saved_locale.dart # Get saved locale use case
+│   │       │   │       └── save_locale.dart      # Save locale use case
+│   │       │   ├── data/                         # Data layer
+│   │       │   │   └── repositories/
+│   │       │   │       └── locale_repository_impl.dart # Locale repository implementation
+│   │       │   ├── presentation/                 # UI layer
+│   │       │   │   └── bloc/
+│   │       │   │       ├── localization_bloc.dart   # Localization BLoC
+│   │       │   │       ├── localization_event.dart  # Localization events
+│   │       │   │       └── localization_state.dart  # Localization states
+│   │       │   ├── l10n/                         # Translation files (ARB)
+│   │       │   │   ├── app_en.arb               # English translations (40+ keys)
+│   │       │   │   ├── app_bn.arb               # Bengali translations (বাংলা)
+│   │       │   │   └── app_es.arb               # Spanish translations (Español)
+│   │       │   ├── generated/                    # Auto-generated files
+│   │       │   │   ├── app_localizations.dart   # Main localizations class
+│   │       │   │   ├── app_localizations_en.dart # English delegate
+│   │       │   │   ├── app_localizations_bn.dart # Bengali delegate
+│   │       │   │   └── app_localizations_es.dart # Spanish delegate
+│   │       │   └── localization.dart            # Barrel export file
+│   │       └── theme/                            # Theme system
+│   │           ├── config/
+│   │           │   ├── app_light_theme.dart     # Light theme config
+│   │           │   ├── app_dark_theme.dart      # Dark theme config
+│   │           │   └── theme_extensions.dart    # Custom theme extensions
+│   │           └── presentation/
+│   │               └── cubit/
+│   │                   └── theme_cubit.dart     # Theme state management (BLoC)
+│   ├── l10n.yaml                                 # Localization generation config
 │   └── pubspec.yaml
 │
 ├── features_auth/                                 # Authentication Feature
@@ -185,8 +222,11 @@ Presentation → Domain ← Data
 ```yaml
 dependencies:
   - dio ^5.9.0
-  - flutter_secure_storage ^9.2.2
-  - shared_preferences ^2.3.3
+  - flutter_secure_storage ^9.2.4
+  - shared_preferences ^2.5.3
+  - flutter_localizations (SDK)
+  - intl
+  - dartz ^0.10.1
 ```
 
 ### Feature Packages (Auth & User)
@@ -362,7 +402,133 @@ Centralized in the `core` package:
   - LoggingInterceptor (logs requests/responses)
 - **TokenStorage**: Secure token persistence
 
-## 🔄 Data Flow
+## 🌍 Localization System
+
+The app includes a **complete internationalization (i18n) system** following Clean Architecture principles:
+
+### Supported Languages
+
+- **English** (en_US) - Default
+- **Bengali** (বাংলা - bn_BD)
+- **Spanish** (Español - es_ES)
+
+### Architecture
+
+**Domain Layer:**
+- `AppLocale` entity with supported locale definitions
+- `LocaleRepository` interface for locale persistence
+- `GetSavedLocaleUseCase` - Retrieves saved language preference
+- `SaveLocaleUseCase` - Persists language selection
+
+**Data Layer:**
+- `LocaleRepositoryImpl` - Repository implementation
+- `LocaleStorage` - SharedPreferences wrapper for persistence
+
+**Presentation Layer:**
+- `LocalizationBloc` - State management with events/states
+  - `LoadSavedLocaleEvent` - Load saved locale on app start
+  - `ChangeLocaleEvent` - Switch to a new locale
+  - `ResetToSystemLocaleEvent` - Reset to device locale
+- `LocalizationState` - States: Initial, Loading, Loaded, Error
+
+### Translation Files
+
+Location: `packages/core/lib/src/localization/l10n/`
+
+- `app_en.arb` - English translations (40+ keys)
+- `app_bn.arb` - Bengali translations
+- `app_es.arb` - Spanish translations
+
+### Code Generation
+
+The project uses Flutter's built-in localization generator (`flutter gen-l10n`):
+
+```yaml
+# packages/core/l10n.yaml
+arb-dir: lib/src/localization/l10n
+template-arb-file: app_en.arb
+output-localization-file: app_localizations.dart
+output-class: AppLocalizations
+output-dir: lib/src/localization/generated
+```
+
+Generated file: `AppLocalizations` with type-safe accessor methods.
+
+### Usage
+
+**In UI:**
+```dart
+// Access translations
+Text(AppLocalizations.of(context).appTitle)
+Text(AppLocalizations.of(context).login)
+Text(AppLocalizations.of(context).logout)
+
+// Change language
+context.read<LocalizationBloc>().add(
+  ChangeLocaleEvent(AppLocale.bengali),
+);
+```
+
+**MaterialApp Configuration:**
+```dart
+MaterialApp(
+  locale: currentLocale, // From LocalizationBloc
+  supportedLocales: AppLocale.supportedFlutterLocales,
+  localizationsDelegates: AppLocalizations.localizationsDelegates,
+  // ...
+)
+```
+
+### Persistence
+
+- Language preference saved using `SharedPreferences`
+- Automatically loaded on app startup
+- Persists across app sessions
+
+### Adding New Translations
+
+1. Add key to `app_en.arb`:
+   ```json
+   "newKey": "English text",
+   "@newKey": {
+     "description": "Description of this key"
+   }
+   ```
+
+2. Add translations to `app_bn.arb` and `app_es.arb`
+
+3. Run code generation:
+   ```bash
+   flutter pub get
+   # Auto-generates on build
+   ```
+
+4. Use in code:
+   ```dart
+   AppLocalizations.of(context).newKey
+   ```
+
+## 🎨 Theme System
+
+Centralized theming with Material 3:
+
+- **ThemeCubit**: State management for theme mode
+- **Light/Dark Themes**: Separate theme configurations
+- **Custom Extensions**: Additional design tokens
+- **System Default**: Respects device theme preference
+
+Usage:
+```dart
+// Change theme
+context.read<ThemeCubit>().changeTheme(ThemeMode.dark);
+
+// In MaterialApp
+themeMode: currentThemeMode, // From ThemeCubit
+```
+
+## 🔐 Network Layer
+
+Centralized in the `core` package:
 
 ```
 User Action (UI)
