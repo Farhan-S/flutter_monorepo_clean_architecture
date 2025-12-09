@@ -39,8 +39,12 @@ class _OnboardingPageState extends State<OnboardingPage> {
         child: BlocListener<OnboardingBloc, OnboardingState>(
           listener: (context, state) {
             if (state is OnboardingCompleted || state is OnboardingSkipped) {
-              // Navigate to splash/login
-              AppRoutes.navigateToSplash(context);
+              // Navigate directly to login after onboarding is completed
+              Future.delayed(const Duration(milliseconds: 300), () {
+                if (mounted) {
+                  AppRoutes.navigateToLogin(context);
+                }
+              });
             } else if (state is OnboardingLoaded) {
               // Animate to current page
               if (_pageController.hasClients) {

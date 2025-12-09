@@ -72,9 +72,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (_) => getIt<AuthBloc>()..add(const AuthCheckRequested()),
-        ),
+        BlocProvider(create: (_) => getIt<AuthBloc>()),
         BlocProvider(create: (_) => ThemeCubit()),
       ],
       child: BlocBuilder<ThemeCubit, ThemeMode>(

@@ -1,5 +1,6 @@
 import 'package:core/core.dart';
 import 'package:dartz/dartz.dart';
+import 'package:flutter/material.dart';
 
 import '../../domain/entities/onboarding_page_entity.dart';
 import '../../domain/repositories/onboarding_repository.dart';
@@ -27,9 +28,12 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
   @override
   Future<Either<ApiException, bool>> completeOnboarding() async {
     try {
+      debugPrint('📝 Onboarding - Marking as completed...');
       final result = await localDataSource.completeOnboarding();
+      debugPrint('✅ Onboarding - Marked as completed: $result');
       return Right(result);
     } catch (e) {
+      debugPrint('❌ Onboarding - Failed to complete: $e');
       return Left(
         ApiException('Failed to complete onboarding: ${e.toString()}'),
       );

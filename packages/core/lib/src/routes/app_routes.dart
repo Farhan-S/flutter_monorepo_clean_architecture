@@ -6,11 +6,11 @@ class AppRoutes {
   // ==================== Route Names ====================
 
   // Splash & Onboarding Routes
-  static const String splash = '/splash';
+  static const String splash = '/';
   static const String onboarding = '/onboarding';
 
   // Home Routes
-  static const String home = '/';
+  static const String home = '/home';
   static const String networkTest = '/network-test';
 
   // Auth Routes
@@ -37,7 +37,11 @@ class AppRoutes {
 
   /// Navigate to onboarding page
   static Future<void> navigateToOnboarding(BuildContext context) {
-    return Navigator.pushNamedAndRemoveUntil(context, onboarding, (route) => false);
+    return Navigator.pushNamedAndRemoveUntil(
+      context,
+      onboarding,
+      (route) => false,
+    );
   }
 
   /// Navigate to home page

@@ -65,4 +65,9 @@ class AppInitDataSource {
     // This would make an API call to validate the token
     return true;
   }
+
+  /// Reset onboarding status (for testing/debugging)
+  Future<bool> resetOnboardingStatus() async {
+    return await _sharedPreferences.remove('onboarding_completed');
+  }
 }

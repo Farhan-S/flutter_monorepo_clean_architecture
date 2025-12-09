@@ -51,10 +51,18 @@ class _SplashPageState extends State<SplashPage>
       backgroundColor: Theme.of(context).primaryColor,
       body: BlocListener<SplashBloc, SplashState>(
         listener: (context, state) {
+          debugPrint('🚀 Splash - State changed: ${state.runtimeType}');
+
           if (state is SplashAuthenticated) {
+            debugPrint('✅ Splash - User authenticated');
+            debugPrint(
+              '   hasCompletedOnboarding: ${state.appInit.hasCompletedOnboarding}',
+            );
+
             // Check if onboarding is completed
             if (!state.appInit.hasCompletedOnboarding) {
               // Navigate to onboarding
+              debugPrint('➡️  Splash - Navigating to Onboarding (first time)');
               Future.delayed(const Duration(milliseconds: 500), () {
                 if (mounted) {
                   AppRoutes.navigateToOnboarding(context);
@@ -62,6 +70,7 @@ class _SplashPageState extends State<SplashPage>
               });
             } else {
               // Navigate to home
+              debugPrint('➡️  Splash - Navigating to Home');
               Future.delayed(const Duration(milliseconds: 500), () {
                 if (mounted) {
                   AppRoutes.navigateToHome(context);
@@ -69,9 +78,15 @@ class _SplashPageState extends State<SplashPage>
               });
             }
           } else if (state is SplashUnauthenticated) {
+            debugPrint('❌ Splash - User not authenticated');
+            debugPrint(
+              '   hasCompletedOnboarding: ${state.appInit.hasCompletedOnboarding}',
+            );
+
             // Check if onboarding is completed
             if (!state.appInit.hasCompletedOnboarding) {
               // Navigate to onboarding
+              debugPrint('➡️  Splash - Navigating to Onboarding (first time)');
               Future.delayed(const Duration(milliseconds: 500), () {
                 if (mounted) {
                   AppRoutes.navigateToOnboarding(context);
@@ -79,6 +94,7 @@ class _SplashPageState extends State<SplashPage>
               });
             } else {
               // Navigate to login
+              debugPrint('➡️  Splash - Navigating to Login');
               Future.delayed(const Duration(milliseconds: 500), () {
                 if (mounted) {
                   AppRoutes.navigateToLogin(context);
@@ -86,6 +102,7 @@ class _SplashPageState extends State<SplashPage>
               });
             }
           } else if (state is SplashError) {
+            debugPrint('❌ Splash - Error: ${state.message}');
             // Show error and navigate to onboarding/login
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(

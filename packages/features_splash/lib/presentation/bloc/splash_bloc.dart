@@ -1,4 +1,4 @@
-import 'package:features_splash/domain/entities/app_init_entity.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/usecases/check_auth_status_usecase.dart';
@@ -30,12 +30,21 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
 
     result.fold(
       (failure) {
+        debugPrint('❌ Splash - Initialization failed: ${failure.message}');
         emit(SplashError(failure.message));
       },
       (appInit) {
+        debugPrint('✅ Splash - Initialized: ${appInit.toString()}');
+        debugPrint('   isAuthenticated: ${appInit.isAuthenticated}');
+        debugPrint(
+          '   hasCompletedOnboarding: ${appInit.hasCompletedOnboarding}',
+        );
+
         if (appInit.isAuthenticated) {
+          debugPrint('➡️  Splash - Emitting SplashAuthenticated');
           emit(SplashAuthenticated(appInit));
         } else {
+          debugPrint('➡️  Splash - Emitting SplashUnauthenticated');
           emit(SplashUnauthenticated(appInit));
         }
       },
@@ -49,33 +58,18 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
   ) async {
     emit(const SplashLoading());
 
-    final result = await checkAuthStatusUseCase();
+    // Get app initialization data which includes onboarding status
+    final initResult = await initializeAppUseCase();
 
-    result.fold(
+    initResult.fold(
       (failure) {
         emit(SplashError(failure.message));
       },
-      (isAuthenticated) {
-        if (isAuthenticated) {
-          emit(
-            const SplashAuthenticated(
-              AppInitEntity(
-                isInitialized: true,
-                isAuthenticated: true,
-                hasCompletedOnboarding: false,
-              ),
-            ),
-          );
+      (appInit) {
+        if (appInit.isAuthenticated) {
+          emit(SplashAuthenticated(appInit));
         } else {
-          emit(
-            const SplashUnauthenticated(
-              AppInitEntity(
-                isInitialized: true,
-                isAuthenticated: false,
-                hasCompletedOnboarding: false,
-              ),
-            ),
-          );
+          emit(SplashUnauthenticated(appInit));
         }
       },
     );
