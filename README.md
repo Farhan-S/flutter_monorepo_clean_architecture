@@ -408,7 +408,7 @@ The app supports **3 languages** with complete Clean Architecture implementation
 ### Supported Languages
 
 - **English** (en_US) - Default
-- **Bengali** (বাংলা - bn_BD) 
+- **Bengali** (বাংলা - bn_BD)
 - **Spanish** (Español - es_ES)
 
 ### Usage
@@ -463,6 +463,7 @@ final themeMode = context.watch<ThemeCubit>().state;
 ```
 
 Features:
+
 - ✅ Light/Dark/System modes
 - ✅ Material 3 design tokens
 - ✅ Custom color extensions

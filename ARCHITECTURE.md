@@ -415,16 +415,19 @@ The app includes a **complete internationalization (i18n) system** following Cle
 ### Architecture
 
 **Domain Layer:**
+
 - `AppLocale` entity with supported locale definitions
 - `LocaleRepository` interface for locale persistence
 - `GetSavedLocaleUseCase` - Retrieves saved language preference
 - `SaveLocaleUseCase` - Persists language selection
 
 **Data Layer:**
+
 - `LocaleRepositoryImpl` - Repository implementation
 - `LocaleStorage` - SharedPreferences wrapper for persistence
 
 **Presentation Layer:**
+
 - `LocalizationBloc` - State management with events/states
   - `LoadSavedLocaleEvent` - Load saved locale on app start
   - `ChangeLocaleEvent` - Switch to a new locale
@@ -457,6 +460,7 @@ Generated file: `AppLocalizations` with type-safe accessor methods.
 ### Usage
 
 **In UI:**
+
 ```dart
 // Access translations
 Text(AppLocalizations.of(context).appTitle)
@@ -470,6 +474,7 @@ context.read<LocalizationBloc>().add(
 ```
 
 **MaterialApp Configuration:**
+
 ```dart
 MaterialApp(
   locale: currentLocale, // From LocalizationBloc
@@ -488,6 +493,7 @@ MaterialApp(
 ### Adding New Translations
 
 1. Add key to `app_en.arb`:
+
    ```json
    "newKey": "English text",
    "@newKey": {
@@ -498,6 +504,7 @@ MaterialApp(
 2. Add translations to `app_bn.arb` and `app_es.arb`
 
 3. Run code generation:
+
    ```bash
    flutter pub get
    # Auto-generates on build
@@ -518,6 +525,7 @@ Centralized theming with Material 3:
 - **System Default**: Respects device theme preference
 
 Usage:
+
 ```dart
 // Change theme
 context.read<ThemeCubit>().changeTheme(ThemeMode.dark);
