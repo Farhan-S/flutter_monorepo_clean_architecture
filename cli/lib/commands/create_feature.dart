@@ -23,10 +23,25 @@ class CreateFeatureCommand {
     final pascalName = StringUtils.toPascalCase(featureName);
     final camelName = StringUtils.toCamelCase(featureName);
 
+    // Check if running from project root
+    final currentDir = Directory.current.path;
+    final melosFile = File('$currentDir/melos.yaml');
+    final packagesDir = Directory('$currentDir/packages');
+
+    if (!melosFile.existsSync() || !packagesDir.existsSync()) {
+      Logger.error(
+          '❌ Please run this command from the project root directory!');
+      Logger.error(
+          '   (The directory containing melos.yaml and packages/ folder)');
+      print('');
+      print('Current directory: ${_cyan}$currentDir$_reset');
+      print('Expected files: ${_cyan}melos.yaml, packages/$_reset');
+      exit(1);
+    }
+
     Logger.header('Creating Feature: $snakeName');
 
-    // Check if already in packages directory
-    final currentDir = Directory.current.path;
+    // Determine packages path
     final packagesPath =
         currentDir.endsWith('packages') ? currentDir : '$currentDir/packages';
 
@@ -123,6 +138,11 @@ class CreateFeatureCommand {
     _registerRouteInGenerator(snakeName, pascalName, camelName);
     Logger.success('Route registered in app_route_generator.dart');
 
+    // Add to app/pubspec.yaml
+    Logger.step('Adding dependency to app/pubspec.yaml...');
+    _addToAppPubspec(snakeName);
+    Logger.success('Dependency added to app/pubspec.yaml');
+
     // Install dependencies
     Logger.step('Installing dependencies...');
     _installDependencies(featurePath);
@@ -133,12 +153,7 @@ class CreateFeatureCommand {
     print('''
 Next steps:
 
-1. Add dependency to app/pubspec.yaml:
-   ${_cyan}dependencies:
-     features_$snakeName:
-       path: ../features_$snakeName$_reset
-
-2. Register in app/lib/injection_container.dart:
+1. Register in app/lib/injection_container.dart:
    ${_cyan}// Data Sources
    getIt.registerLazySingleton<${pascalName}RemoteDataSource>(
      () => ${pascalName}RemoteDataSource(getIt<DioClient>()),
@@ -161,6 +176,7 @@ Next steps:
 
 ${_green}✨ What was done automatically:$_reset
    • Created complete Clean Architecture structure
+   • Added dependency to app/pubspec.yaml
    • Installed all feature dependencies
    • Registered routes in app_routes.dart
    • Registered routes in app_route_generator.dart
@@ -388,6 +404,83 @@ Feature location: ${_green}$featurePath$_reset
       }
     } catch (e) {
       Logger.error('Error registering route in app_route_generator.dart: $e');
+    }
+  }
+
+  void _addToAppPubspec(String snakeName) {
+    try {
+      final currentDir = Directory.current.path;
+      final appPubspecPath = currentDir.endsWith('packages')
+          ? '$currentDir/app/pubspec.yaml'
+          : '$currentDir/packages/app/pubspec.yaml';
+
+      final appPubspecFile = File(appPubspecPath);
+      if (!appPubspecFile.existsSync()) {
+        Logger.warning('app/pubspec.yaml not found at $appPubspecPath');
+        return;
+      }
+
+      String content = appPubspecFile.readAsStringSync();
+
+      // Check if already added
+      if (content.contains('features_$snakeName:')) {
+        Logger.warning(
+            'features_$snakeName already exists in app/pubspec.yaml');
+        return;
+      }
+
+      // Find the insertion point - after the last features_ dependency or after core
+      final lines = content.split('\n');
+      int insertIndex = -1;
+      int lastFeatureIndex = -1;
+
+      for (int i = 0; i < lines.length; i++) {
+        final line = lines[i].trim();
+
+        // Find the last features_ package
+        if (line.startsWith('features_') && line.endsWith(':')) {
+          lastFeatureIndex = i;
+        }
+
+        // Also track core package as fallback
+        if (line == 'core:' && insertIndex == -1) {
+          insertIndex = i;
+        }
+      }
+
+      // Use last feature index if found, otherwise use core
+      if (lastFeatureIndex != -1) {
+        insertIndex = lastFeatureIndex;
+      }
+
+      if (insertIndex == -1) {
+        Logger.warning('Could not find insertion point in app/pubspec.yaml');
+        return;
+      }
+
+      // Find the end of that dependency block (next line with path:)
+      for (int i = insertIndex + 1;
+          i < lines.length && i < insertIndex + 3;
+          i++) {
+        if (lines[i].trim().startsWith('path:')) {
+          insertIndex = i;
+          break;
+        }
+      }
+
+      // Insert the new dependency after the found index
+      final newDependency = '''  features_$snakeName:
+    path: ../features_$snakeName''';
+
+      lines.insert(insertIndex + 1, newDependency);
+
+      final newContent = lines.join('\n');
+      appPubspecFile.writeAsStringSync(newContent);
+    } catch (e) {
+      Logger.warning('Error adding to app/pubspec.yaml: $e');
+      Logger.warning('Please add manually:');
+      Logger.warning('  features_$snakeName:');
+      Logger.warning('    path: ../features_$snakeName');
     }
   }
 
