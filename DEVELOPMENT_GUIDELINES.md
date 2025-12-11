@@ -20,7 +20,54 @@ This guide provides step-by-step instructions for common development tasks in th
 
 ## 🎯 Creating a New Feature
 
-Follow these steps to create a new feature module (e.g., `products`):
+You can create a new feature module in two ways:
+
+### Quick Method: Using Maloc CLI (Recommended)
+
+The **maloc_cli** tool automatically generates all necessary files and registers routes with go_router:
+
+```bash
+# Install maloc CLI globally (first time only)
+cd maloc_cli
+dart pub global activate --source path .
+
+# Generate a new feature
+maloc feature products
+```
+
+This automatically:
+
+- ✅ Creates complete Clean Architecture structure (domain/data/presentation)
+- ✅ Generates BLoC (events, states, bloc)
+- ✅ Creates entity, model, repository, use case, data source
+- ✅ Generates page with BLoC integration
+- ✅ Adds route constants to `app_routes.dart`
+- ✅ Registers GoRoute in `app_router.dart`
+- ✅ Creates navigation helper `navigateToProducts(context)`
+- ✅ Updates `app/pubspec.yaml` with dependency
+- ✅ Runs `dart pub get` automatically
+
+**Then just add to DI container:**
+
+```dart
+// In app/lib/injection_container.dart
+getIt.registerLazySingleton<ProductRemoteDataSource>(
+  () => ProductRemoteDataSource(getIt<DioClient>()),
+);
+getIt.registerLazySingleton<ProductRepository>(
+  () => ProductRepositoryImpl(getIt<ProductRemoteDataSource>()),
+);
+getIt.registerLazySingleton<GetProductsUseCase>(
+  () => GetProductsUseCase(getIt<ProductRepository>()),
+);
+getIt.registerFactory<ProductBloc>(
+  () => ProductBloc(getProductsUseCase: getIt<GetProductsUseCase>()),
+);
+```
+
+### Manual Method: Step-by-Step
+
+Follow these steps to create a new feature module manually (e.g., `products`):
 
 ### Step 1: Create Package Structure
 
@@ -1112,6 +1159,35 @@ class ProductCard extends StatelessWidget {
 
 ## 🧭 Adding New Routes
 
+> **Note:** If you used `maloc feature <name>`, routes are automatically registered! The following is only needed for manual route addition or customization.
+
+### Automatic Route Registration (maloc CLI)
+
+When you generate a feature with maloc CLI:
+
+```bash
+maloc feature products
+```
+
+It automatically:
+
+- ✅ Adds `products` and `productsPath` constants to `app_routes.dart`
+- ✅ Creates navigation helper `navigateToProducts(context)`
+- ✅ Registers `GoRoute` in `app_router.dart`
+- ✅ Imports feature package
+
+You can immediately use:
+
+```dart
+AppRoutes.navigateToProducts(context);
+// or
+context.push(AppRoutes.productsPath);
+```
+
+### Manual Route Registration
+
+If adding routes manually or customizing:
+
 ### Step 1: Add Route Constants
 
 ```dart
@@ -1134,15 +1210,15 @@ class AppRoutes {
 
   // Navigation helpers
   static void goToProducts(BuildContext context) {
-    context.go(productsPath);
+    context.push(productsPath);
   }
 
   static void goToProductDetail(BuildContext context, String productId) {
-    context.go('/products/$productId');
+    context.push('/products/$productId');
   }
 
   static void goToCreateProduct(BuildContext context) {
-    context.go(createProductPath);
+    context.push(createProductPath);
   }
 }
 ```
