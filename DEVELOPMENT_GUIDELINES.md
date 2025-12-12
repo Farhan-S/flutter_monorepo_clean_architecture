@@ -1,4 +1,4 @@
-# Development Guidelines - Flutter Dio Network Config Template
+# Development Guidelines - Flutter Mono Repo Clean Architecture Template
 
 This guide provides step-by-step instructions for common development tasks in this Flutter template. Follow these guidelines to maintain consistency with the Clean Architecture pattern and BLoC state management.
 

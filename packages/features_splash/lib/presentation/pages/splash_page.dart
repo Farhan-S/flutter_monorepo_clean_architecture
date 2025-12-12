@@ -150,7 +150,7 @@ class _SplashPageState extends State<SplashPage>
 
                     // App Name
                     const Text(
-                      'Dio Network Config',
+                      'Mono Repo Clean Architecture',
                       style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,

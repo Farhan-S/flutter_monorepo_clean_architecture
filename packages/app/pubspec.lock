@@ -205,13 +205,6 @@ packages:
       relative: true
     source: path
     version: "1.0.0"
-  features_product:
-    dependency: "direct main"
-    description:
-      path: "../features_product"
-      relative: true
-    source: path
-    version: "1.0.0"
   features_splash:
     dependency: "direct main"
     description:

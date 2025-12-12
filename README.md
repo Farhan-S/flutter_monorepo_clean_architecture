@@ -1,4 +1,4 @@
-# Flutter Dio Network Config - Complete Documentation
+# Flutter Mono Repo Clean Architecture - Complete Documentation
 
 A production-ready Flutter application template featuring **Clean Architecture**, **BLoC State Management**, and **Advanced Networking** with Dio. This template provides a scalable foundation for building enterprise-grade Flutter applications with proper separation of concerns, testability, and maintainability.
 
