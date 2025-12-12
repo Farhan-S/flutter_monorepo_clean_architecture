@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../tokens/spacing.dart';
 
 /// Theme extension for spacing
-/// Access via: Theme.of(context).extension<AppSpacingExtension>()
+/// Access via: Theme.of(context).extension`<AppSpacingExtension>`()
 @immutable
 class AppSpacingExtension extends ThemeExtension<AppSpacingExtension> {
   final double pageHorizontal;

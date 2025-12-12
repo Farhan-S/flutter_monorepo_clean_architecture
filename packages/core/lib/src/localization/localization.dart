@@ -1,6 +1,3 @@
-/// Localization system exports
-library localization;
-
 // Data
 export 'data/repositories/locale_repository_impl.dart';
 // Domain

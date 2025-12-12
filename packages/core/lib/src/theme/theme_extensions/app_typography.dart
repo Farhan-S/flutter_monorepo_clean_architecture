@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../tokens/typography.dart';
 
 /// Theme extension for typography
-/// Access via: Theme.of(context).extension<AppTypographyExtension>()
+/// Access via: Theme.of(context).extension`<AppTypographyExtension>`()
 @immutable
 class AppTypographyExtension extends ThemeExtension<AppTypographyExtension> {
   final TextStyle button;

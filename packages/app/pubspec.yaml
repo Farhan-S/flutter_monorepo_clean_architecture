@@ -28,6 +28,9 @@ dependencies:
   # State Management
   flutter_bloc: ^8.1.6
 
+  # Storage
+  shared_preferences: ^2.2.2
+
   # Dependency Injection
   get_it: ^8.0.2
 

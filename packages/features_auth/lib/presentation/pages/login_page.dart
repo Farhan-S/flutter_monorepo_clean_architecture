@@ -9,10 +9,13 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Login'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        elevation: 0,
+        backgroundColor: theme.colorScheme.surface,
+        foregroundColor: theme.colorScheme.onSurface,
       ),
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
@@ -22,16 +25,18 @@ class LoginPage extends StatelessWidget {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(state.message),
-                backgroundColor: Colors.red,
+                backgroundColor: theme.colorScheme.error,
               ),
             );
           } else if (state is AuthAuthenticated) {
             debugPrint('🔐 LoginPage - User authenticated: ${state.user.name}');
 
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Login successful!'),
-                backgroundColor: Colors.green,
+              SnackBar(
+                content: const Text('Login successful!'),
+                backgroundColor:
+                    theme.extension<AppColorsExtension>()?.success ??
+                    Colors.green,
               ),
             );
 

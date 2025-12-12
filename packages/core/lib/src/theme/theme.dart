@@ -1,6 +1,3 @@
-/// Theme system exports
-library theme;
-
 export 'dark_theme.dart';
 // Light and dark themes
 export 'light_theme.dart';

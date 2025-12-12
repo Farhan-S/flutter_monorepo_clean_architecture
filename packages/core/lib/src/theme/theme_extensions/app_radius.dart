@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../tokens/radius.dart';
 
 /// Theme extension for border radius
-/// Access via: Theme.of(context).extension<AppRadiusExtension>()
+/// Access via: Theme.of(context).extension`<AppRadiusExtension>`()
 @immutable
 class AppRadiusExtension extends ThemeExtension<AppRadiusExtension> {
   final double button;

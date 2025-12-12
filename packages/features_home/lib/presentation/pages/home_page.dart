@@ -193,20 +193,21 @@ class _HomePageView extends StatelessWidget {
                         ),
                         background: Container(
                           decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [
-                                Theme.of(context).colorScheme.primary,
-                                Theme.of(context).colorScheme.secondary,
-                              ],
+                            color: Theme.of(context).colorScheme.surface,
+                            border: Border(
+                              bottom: BorderSide(
+                                color: Theme.of(context).colorScheme.outline,
+                                width: 1,
+                              ),
                             ),
                           ),
-                          child: const Center(
+                          child: Center(
                             child: Icon(
-                              Icons.architecture,
-                              size: 80,
-                              color: Colors.white70,
+                              Icons.circle_outlined,
+                              size: 60,
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.primary.withValues(alpha: 0.3),
                             ),
                           ),
                         ),
@@ -275,38 +276,39 @@ class _HomePageView extends StatelessWidget {
   }
 
   Widget _buildUserProfileCard(BuildContext context, AuthAuthenticated state) {
+    final theme = Theme.of(context);
     return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: theme.colorScheme.outline, width: 1),
+      ),
       child: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Theme.of(context).colorScheme.primaryContainer,
-              Theme.of(context).colorScheme.secondaryContainer,
-            ],
-          ),
-          borderRadius: BorderRadius.circular(16),
+          color: theme.colorScheme.surface,
+          borderRadius: BorderRadius.circular(12),
         ),
         padding: const EdgeInsets.all(20),
         child: Row(
           children: [
-            CircleAvatar(
-              radius: 40,
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              backgroundImage: state.user.avatar != null
-                  ? NetworkImage(state.user.avatar!)
-                  : null,
-              child: state.user.avatar == null
-                  ? Text(
-                      state.user.name[0].toUpperCase(),
-                      style: const TextStyle(
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    )
-                  : null,
+            Container(
+              width: 60,
+              height: 60,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: theme.colorScheme.outline, width: 2),
+                color: theme.colorScheme.surface,
+              ),
+              child: Center(
+                child: Text(
+                  state.user.name[0].toUpperCase(),
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w300,
+                    color: theme.colorScheme.primary,
+                  ),
+                ),
+              ),
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -315,45 +317,44 @@ class _HomePageView extends StatelessWidget {
                 children: [
                   Text(
                     state.user.name,
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w400,
+                      letterSpacing: 0.5,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     state.user.email,
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodyMedium?.copyWith(color: Colors.grey[700]),
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                      fontWeight: FontWeight.w300,
+                    ),
                   ),
                   const SizedBox(height: 8),
                   Container(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 6,
+                      horizontal: 8,
+                      vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.green.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color:
+                            theme.extension<AppColorsExtension>()?.success ??
+                            Colors.green,
+                        width: 1,
+                      ),
+                      borderRadius: BorderRadius.circular(4),
                     ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.check_circle,
-                          size: 16,
-                          color: Colors.green[700],
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          'Authenticated',
-                          style: TextStyle(
-                            color: Colors.green[700],
-                            fontWeight: FontWeight.w600,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
+                    child: Text(
+                      'Authenticated',
+                      style: TextStyle(
+                        color:
+                            theme.extension<AppColorsExtension>()?.success ??
+                            Colors.green,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 11,
+                        letterSpacing: 0.5,
+                      ),
                     ),
                   ),
                 ],
@@ -398,20 +399,24 @@ class _HomePageView extends StatelessWidget {
       statusSubtext = 'Login to access all features';
     }
 
+    final theme = Theme.of(context);
     return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+        side: BorderSide(color: theme.colorScheme.outline, width: 1),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Row(
           children: [
             Container(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: statusColor.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: statusColor, width: 1),
+                borderRadius: BorderRadius.circular(8),
               ),
-              child: Icon(statusIcon, color: statusColor, size: 32),
+              child: Icon(statusIcon, color: statusColor, size: 28),
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -420,15 +425,17 @@ class _HomePageView extends StatelessWidget {
                 children: [
                   Text(
                     statusText,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w400,
                       color: statusColor,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     statusSubtext,
-                    style: Theme.of(context).textTheme.bodySmall,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      fontWeight: FontWeight.w300,
+                    ),
                   ),
                 ],
               ),
@@ -444,25 +451,28 @@ class _HomePageView extends StatelessWidget {
     bool isAuthenticated,
     AuthState state,
   ) {
+    final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
           'Quick Actions',
-          style: Theme.of(
-            context,
-          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+          style: theme.textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.w300,
+            letterSpacing: 1.0,
+          ),
         ),
         const SizedBox(height: 12),
         if (!isAuthenticated)
-          ElevatedButton.icon(
+          OutlinedButton.icon(
             onPressed: () => AppRoutes.navigateToLogin(context),
-            icon: const Icon(Icons.login),
+            icon: const Icon(Icons.login, size: 18),
             label: Text(AppLocalizations.of(context).login),
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.all(16),
+            style: OutlinedButton.styleFrom(
+              padding: const EdgeInsets.all(14),
+              side: BorderSide(color: theme.colorScheme.primary, width: 1),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(8),
               ),
             ),
           )
@@ -484,18 +494,18 @@ class _HomePageView extends StatelessWidget {
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: ElevatedButton.icon(
+                child: OutlinedButton.icon(
                   onPressed: () {
                     context.read<AuthBloc>().add(const AuthLogoutRequested());
                   },
-                  icon: const Icon(Icons.logout),
+                  icon: const Icon(Icons.logout, size: 18),
                   label: Text(AppLocalizations.of(context).logout),
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.all(16),
-                    backgroundColor: Colors.red,
-                    foregroundColor: Colors.white,
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.all(14),
+                    foregroundColor: theme.colorScheme.error,
+                    side: BorderSide(color: theme.colorScheme.error, width: 1),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(8),
                     ),
                   ),
                 ),
@@ -508,14 +518,16 @@ class _HomePageView extends StatelessWidget {
   }
 
   Widget _buildFeaturesSection(BuildContext context) {
+    final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'Features',
-          style: Theme.of(
-            context,
-          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+          style: theme.textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.w300,
+            letterSpacing: 1.0,
+          ),
         ),
         const SizedBox(height: 12),
         _buildFeatureCard(
@@ -560,28 +572,42 @@ class _HomePageView extends StatelessWidget {
     String description,
     Color color,
   ) {
+    final theme = Theme.of(context);
     return Card(
-      elevation: 1,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+        side: BorderSide(color: theme.colorScheme.outline, width: 1),
+      ),
       child: ListTile(
         leading: Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: color, width: 1),
+            borderRadius: BorderRadius.circular(6),
           ),
-          child: Icon(icon, color: color),
+          child: Icon(icon, color: color, size: 20),
         ),
-        title: Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
-        subtitle: Text(description),
+        title: Text(
+          title,
+          style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14),
+        ),
+        subtitle: Text(
+          description,
+          style: TextStyle(fontWeight: FontWeight.w300, fontSize: 12),
+        ),
       ),
     );
   }
 
   Widget _buildArchitectureInfo(BuildContext context) {
+    final theme = Theme.of(context);
     return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+        side: BorderSide(color: theme.colorScheme.outline, width: 1),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -590,14 +616,16 @@ class _HomePageView extends StatelessWidget {
             Row(
               children: [
                 Icon(
-                  Icons.info_outline,
-                  color: Theme.of(context).colorScheme.primary,
+                  Icons.circle_outlined,
+                  color: theme.colorScheme.primary,
+                  size: 20,
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  'About This App',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
+                  'About',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w300,
+                    letterSpacing: 0.5,
                   ),
                 ),
               ],
@@ -626,28 +654,33 @@ class _HomePageView extends StatelessWidget {
   }
 
   Widget _buildTechChip(String label, Color color) {
-    return Chip(
-      label: Text(
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        border: Border.all(color: color, width: 1),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Text(
         label,
         style: TextStyle(
           color: color,
-          fontWeight: FontWeight.w600,
-          fontSize: 12,
+          fontWeight: FontWeight.w400,
+          fontSize: 11,
+          letterSpacing: 0.5,
         ),
       ),
-      backgroundColor: color.withOpacity(0.1),
-      side: BorderSide(color: color.withOpacity(0.3)),
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
     );
   }
 
   Widget _buildThemeDemoSection(BuildContext context) {
+    final theme = Theme.of(context);
     return BlocBuilder<ThemeCubit, ThemeMode>(
       builder: (context, themeMode) {
         return Card(
-          elevation: 2,
+          elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(8),
+            side: BorderSide(color: theme.colorScheme.outline, width: 1),
           ),
           child: Padding(
             padding: const EdgeInsets.all(20),
@@ -657,15 +690,18 @@ class _HomePageView extends StatelessWidget {
                 Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(12),
+                      padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.primaryContainer,
-                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: theme.colorScheme.outline,
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.circular(8),
                       ),
                       child: Icon(
-                        Icons.palette,
-                        color: Theme.of(context).colorScheme.onPrimaryContainer,
-                        size: 28,
+                        Icons.circle_outlined,
+                        color: theme.colorScheme.primary,
+                        size: 24,
                       ),
                     ),
                     const SizedBox(width: 16),
@@ -674,14 +710,18 @@ class _HomePageView extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Theme Management',
-                            style: Theme.of(context).textTheme.titleLarge
-                                ?.copyWith(fontWeight: FontWeight.bold),
+                            'Theme',
+                            style: theme.textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.w300,
+                              letterSpacing: 1.0,
+                            ),
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            'BLoC-based theme switching with Material 3',
-                            style: Theme.of(context).textTheme.bodySmall,
+                            'Minimalistic Design System',
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              fontWeight: FontWeight.w300,
+                            ),
                           ),
                         ],
                       ),
@@ -725,8 +765,11 @@ class _HomePageView extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surfaceVariant,
-                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: theme.colorScheme.outline,
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(8),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -858,25 +901,16 @@ class _HomePageView extends StatelessWidget {
   }
 
   Widget _buildColorSwatch(BuildContext context, String label, Color color) {
+    final theme = Theme.of(context);
     return Column(
       children: [
         Container(
-          width: 60,
-          height: 60,
+          width: 50,
+          height: 50,
           decoration: BoxDecoration(
             color: color,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: Theme.of(context).colorScheme.outline,
-              width: 1,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: color.withOpacity(0.3),
-                blurRadius: 8,
-                offset: const Offset(0, 4),
-              ),
-            ],
+            borderRadius: BorderRadius.circular(6),
+            border: Border.all(color: theme.colorScheme.outline, width: 1),
           ),
         ),
         const SizedBox(height: 8),
@@ -892,6 +926,7 @@ class _HomePageView extends StatelessWidget {
 
   Widget _buildLanguageSection(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
 
     return BlocBuilder<LocalizationBloc, LocalizationState>(
       builder: (context, localeState) {
@@ -900,9 +935,10 @@ class _HomePageView extends StatelessWidget {
             : AppLocale.english;
 
         return Card(
-          elevation: 2,
+          elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(8),
+            side: BorderSide(color: theme.colorScheme.outline, width: 1),
           ),
           child: Padding(
             padding: const EdgeInsets.all(20),
@@ -912,17 +948,18 @@ class _HomePageView extends StatelessWidget {
                 Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(12),
+                      padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.secondaryContainer,
-                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: theme.colorScheme.outline,
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.circular(8),
                       ),
                       child: Icon(
-                        Icons.language,
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.onSecondaryContainer,
-                        size: 28,
+                        Icons.circle_outlined,
+                        color: theme.colorScheme.primary,
+                        size: 24,
                       ),
                     ),
                     const SizedBox(width: 16),
@@ -932,13 +969,17 @@ class _HomePageView extends StatelessWidget {
                         children: [
                           Text(
                             l10n.language,
-                            style: Theme.of(context).textTheme.titleLarge
-                                ?.copyWith(fontWeight: FontWeight.bold),
+                            style: theme.textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.w300,
+                              letterSpacing: 1.0,
+                            ),
                           ),
                           const SizedBox(height: 4),
                           Text(
                             'Select your preferred language',
-                            style: Theme.of(context).textTheme.bodySmall,
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              fontWeight: FontWeight.w300,
+                            ),
                           ),
                         ],
                       ),
@@ -966,19 +1007,17 @@ class _HomePageView extends StatelessWidget {
                           ChangeLocaleEvent(locale),
                         );
                       },
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(8),
                       child: Container(
-                        padding: const EdgeInsets.all(16),
+                        padding: const EdgeInsets.all(14),
                         decoration: BoxDecoration(
-                          color: isSelected
-                              ? Theme.of(context).colorScheme.primaryContainer
-                              : Theme.of(context).colorScheme.surfaceVariant,
-                          borderRadius: BorderRadius.circular(12),
+                          color: theme.colorScheme.surface,
+                          borderRadius: BorderRadius.circular(8),
                           border: Border.all(
                             color: isSelected
-                                ? Theme.of(context).colorScheme.primary
-                                : Colors.transparent,
-                            width: 2,
+                                ? theme.colorScheme.primary
+                                : theme.colorScheme.outline,
+                            width: 1,
                           ),
                         ),
                         child: Row(
@@ -1040,14 +1079,17 @@ class _HomePageView extends StatelessWidget {
                       ),
                     ),
                   );
-                }).toList(),
+                }),
                 const SizedBox(height: 16),
                 // Info container
                 Container(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surfaceVariant,
-                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: theme.colorScheme.outline,
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(8),
                   ),
                   child: Row(
                     children: [

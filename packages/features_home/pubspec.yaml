@@ -19,6 +19,9 @@ dependencies:
   dartz: ^0.10.1
   equatable: ^2.0.7
 
+  # Networking
+  dio: ^5.7.0
+
   # Dependency Injection
   get_it: ^8.0.2
 

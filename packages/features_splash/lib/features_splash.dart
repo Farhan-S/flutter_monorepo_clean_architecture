@@ -1,5 +1,3 @@
-library features_splash;
-
 export 'data/datasources/app_init_datasource.dart';
 // Data Layer
 export 'data/models/app_init_model.dart';

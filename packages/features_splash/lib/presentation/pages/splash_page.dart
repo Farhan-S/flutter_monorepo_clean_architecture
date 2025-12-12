@@ -47,8 +47,9 @@ class _SplashPageState extends State<SplashPage>
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
+      backgroundColor: theme.colorScheme.surface,
       body: BlocListener<SplashBloc, SplashState>(
         listener: (context, state) {
           debugPrint('🚀 Splash - State changed: ${state.runtimeType}');
@@ -64,7 +65,7 @@ class _SplashPageState extends State<SplashPage>
               // Navigate to onboarding
               debugPrint('➡️  Splash - Navigating to Onboarding (first time)');
               Future.delayed(const Duration(milliseconds: 500), () {
-                if (mounted) {
+                if (mounted && context.mounted) {
                   AppRoutes.navigateToOnboarding(context);
                 }
               });
@@ -72,7 +73,7 @@ class _SplashPageState extends State<SplashPage>
               // Navigate to home
               debugPrint('➡️  Splash - Navigating to Home');
               Future.delayed(const Duration(milliseconds: 500), () {
-                if (mounted) {
+                if (mounted && context.mounted) {
                   AppRoutes.navigateToHome(context);
                 }
               });
@@ -88,7 +89,7 @@ class _SplashPageState extends State<SplashPage>
               // Navigate to onboarding
               debugPrint('➡️  Splash - Navigating to Onboarding (first time)');
               Future.delayed(const Duration(milliseconds: 500), () {
-                if (mounted) {
+                if (mounted && context.mounted) {
                   AppRoutes.navigateToOnboarding(context);
                 }
               });
@@ -96,7 +97,7 @@ class _SplashPageState extends State<SplashPage>
               // Navigate to login
               debugPrint('➡️  Splash - Navigating to Login');
               Future.delayed(const Duration(milliseconds: 500), () {
-                if (mounted) {
+                if (mounted && context.mounted) {
                   AppRoutes.navigateToLogin(context);
                 }
               });
@@ -111,7 +112,7 @@ class _SplashPageState extends State<SplashPage>
               ),
             );
             Future.delayed(const Duration(seconds: 2), () {
-              if (mounted) {
+              if (mounted && context.mounted) {
                 AppRoutes.navigateToOnboarding(context);
               }
             });
@@ -127,60 +128,60 @@ class _SplashPageState extends State<SplashPage>
                   children: [
                     // App Icon/Logo
                     Container(
-                      width: 120,
-                      height: 120,
+                      width: 100,
+                      height: 100,
                       decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(24),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
-                            blurRadius: 20,
-                            offset: const Offset(0, 10),
-                          ),
-                        ],
+                        color: theme.colorScheme.surface,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: theme.colorScheme.outline,
+                          width: 1,
+                        ),
                       ),
-                      child: const Icon(
-                        Icons.network_check,
-                        size: 60,
-                        color: Colors.blue,
+                      child: Icon(
+                        Icons.circle_outlined,
+                        size: 50,
+                        color: theme.colorScheme.primary,
                       ),
                     ),
                     const SizedBox(height: 32),
 
                     // App Name
-                    const Text(
-                      'Mono Repo Clean Architecture',
+                    Text(
+                      'Clean Architecture',
                       style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        letterSpacing: 1.2,
+                        fontSize: 24,
+                        fontWeight: FontWeight.w300,
+                        color: theme.colorScheme.onSurface,
+                        letterSpacing: 2.0,
                       ),
                     ),
                     const SizedBox(height: 8),
 
                     // Tagline
-                    const Text(
-                      'Clean Architecture Demo',
+                    Text(
+                      'Minimalistic Design',
                       style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.white70,
-                        letterSpacing: 0.5,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w300,
+                        color: theme.colorScheme.onSurface.withValues(
+                          alpha: 0.6,
+                        ),
+                        letterSpacing: 1.0,
                       ),
                     ),
                     const SizedBox(height: 48),
 
                     // Loading Indicator
                     if (state is SplashLoading)
-                      const SizedBox(
-                        width: 40,
-                        height: 40,
+                      SizedBox(
+                        width: 30,
+                        height: 30,
                         child: CircularProgressIndicator(
                           valueColor: AlwaysStoppedAnimation<Color>(
-                            Colors.white,
+                            theme.colorScheme.primary,
                           ),
-                          strokeWidth: 3,
+                          strokeWidth: 2,
                         ),
                       ),
 
@@ -190,18 +191,19 @@ class _SplashPageState extends State<SplashPage>
                         padding: const EdgeInsets.symmetric(horizontal: 32),
                         child: Column(
                           children: [
-                            const Icon(
+                            Icon(
                               Icons.error_outline,
-                              color: Colors.white,
-                              size: 48,
+                              color: theme.colorScheme.error,
+                              size: 40,
                             ),
                             const SizedBox(height: 16),
                             Text(
                               state.message,
                               textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 14,
+                              style: TextStyle(
+                                color: theme.colorScheme.onSurface,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w300,
                               ),
                             ),
                           ],
@@ -211,9 +213,15 @@ class _SplashPageState extends State<SplashPage>
                     const SizedBox(height: 48),
 
                     // Version
-                    const Text(
+                    Text(
                       'v1.0.0',
-                      style: TextStyle(fontSize: 12, color: Colors.white54),
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w300,
+                        color: theme.colorScheme.onSurface.withValues(
+                          alpha: 0.4,
+                        ),
+                      ),
                     ),
                   ],
                 ),

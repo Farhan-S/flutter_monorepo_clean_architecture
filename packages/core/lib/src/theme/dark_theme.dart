@@ -29,11 +29,9 @@ class AppDarkTheme {
       onError: AppColors.onErrorDark,
       errorContainer: AppColors.errorContainerDark,
       onErrorContainer: AppColors.onBackgroundDark,
-      background: AppColors.backgroundDark,
-      onBackground: AppColors.onBackgroundDark,
       surface: AppColors.surfaceDark,
       onSurface: AppColors.onSurfaceDark,
-      surfaceVariant: AppColors.surfaceVariantDark,
+      surfaceContainerHighest: AppColors.surfaceVariantDark,
       onSurfaceVariant: AppColors.onSurfaceDark,
       outline: AppColors.outlineDark,
       outlineVariant: AppColors.outlineVariantDark,
@@ -119,7 +117,7 @@ class AppDarkTheme {
       // Input decoration theme
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: colorScheme.surfaceVariant,
+        fillColor: colorScheme.surfaceContainerHighest,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadius.input),
           borderSide: BorderSide(color: colorScheme.outline),
@@ -145,7 +143,7 @@ class AppDarkTheme {
           vertical: 16,
         ),
         hintStyle: AppTypography.bodyMedium.copyWith(
-          color: colorScheme.onSurfaceVariant.withOpacity(0.6),
+          color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
         ),
         errorStyle: AppTypography.error.copyWith(color: colorScheme.error),
       ),
@@ -155,7 +153,7 @@ class AppDarkTheme {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.chip),
         ),
-        backgroundColor: colorScheme.surfaceVariant,
+        backgroundColor: colorScheme.surfaceContainerHighest,
         selectedColor: colorScheme.secondaryContainer,
         labelStyle: AppTypography.labelSmall,
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -215,24 +213,24 @@ class AppDarkTheme {
 
       // Switch theme
       switchTheme: SwitchThemeData(
-        thumbColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) {
+        thumbColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
             return colorScheme.primary;
           }
           return colorScheme.outline;
         }),
-        trackColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) {
+        trackColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
             return colorScheme.primaryContainer;
           }
-          return colorScheme.surfaceVariant;
+          return colorScheme.surfaceContainerHighest;
         }),
       ),
 
       // Checkbox theme
       checkboxTheme: CheckboxThemeData(
-        fillColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) {
+        fillColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
             return colorScheme.primary;
           }
           return null;
@@ -242,8 +240,8 @@ class AppDarkTheme {
 
       // Radio theme
       radioTheme: RadioThemeData(
-        fillColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) {
+        fillColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
             return colorScheme.primary;
           }
           return null;
@@ -265,7 +263,7 @@ class AppDarkTheme {
         elevation: 3,
         backgroundColor: colorScheme.surface,
         indicatorColor: colorScheme.secondaryContainer,
-        labelTextStyle: MaterialStateProperty.all(AppTypography.labelSmall),
+        labelTextStyle: WidgetStatePropertyAll(AppTypography.labelSmall),
       ),
 
       // Tab bar theme
@@ -292,15 +290,15 @@ class AppDarkTheme {
       // Progress indicator theme
       progressIndicatorTheme: ProgressIndicatorThemeData(
         color: colorScheme.primary,
-        circularTrackColor: colorScheme.surfaceVariant,
+        circularTrackColor: colorScheme.surfaceContainerHighest,
       ),
 
       // Slider theme
       sliderTheme: SliderThemeData(
         activeTrackColor: colorScheme.primary,
-        inactiveTrackColor: colorScheme.surfaceVariant,
+        inactiveTrackColor: colorScheme.surfaceContainerHighest,
         thumbColor: colorScheme.primary,
-        overlayColor: colorScheme.primary.withOpacity(0.12),
+        overlayColor: colorScheme.primary.withValues(alpha: 0.12),
       ),
     );
   }

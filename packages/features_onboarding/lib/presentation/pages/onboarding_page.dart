@@ -33,15 +33,16 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: theme.colorScheme.surface,
       body: SafeArea(
         child: BlocListener<OnboardingBloc, OnboardingState>(
           listener: (context, state) {
             if (state is OnboardingCompleted || state is OnboardingSkipped) {
               // Navigate directly to login after onboarding is completed
               Future.delayed(const Duration(milliseconds: 300), () {
-                if (mounted) {
+                if (mounted && context.mounted) {
                   AppRoutes.navigateToLogin(context);
                 }
               });
@@ -67,10 +68,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.error_outline,
-                        size: 64,
-                        color: Colors.red,
+                        size: 56,
+                        color: theme.colorScheme.error,
                       ),
                       const SizedBox(height: 16),
                       Text(
@@ -207,16 +208,15 @@ class _OnboardingPageState extends State<OnboardingPage> {
     required bool isActive,
     required BuildContext context,
   }) {
+    final theme = Theme.of(context);
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       margin: const EdgeInsets.symmetric(horizontal: 4.0),
-      width: isActive ? 24.0 : 8.0,
-      height: 8.0,
+      width: isActive ? 20.0 : 6.0,
+      height: 6.0,
       decoration: BoxDecoration(
-        color: isActive
-            ? Theme.of(context).primaryColor
-            : Theme.of(context).primaryColor.withOpacity(0.3),
-        borderRadius: BorderRadius.circular(4.0),
+        color: isActive ? theme.colorScheme.primary : theme.colorScheme.outline,
+        borderRadius: BorderRadius.circular(3.0),
       ),
     );
   }

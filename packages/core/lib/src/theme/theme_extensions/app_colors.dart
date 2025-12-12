@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../tokens/colors.dart';
 
 /// Theme extension for custom colors
-/// Access via: Theme.of(context).extension<AppColorsExtension>()
+/// Access via: Theme.of(context).extension`<AppColorsExtension>`()
 @immutable
 class AppColorsExtension extends ThemeExtension<AppColorsExtension> {
   final Color success;

@@ -1,5 +1,3 @@
-library features_home;
-
 export 'data/datasources/network_test_datasource.dart';
 // Data
 export 'data/models/network_test_model.dart';

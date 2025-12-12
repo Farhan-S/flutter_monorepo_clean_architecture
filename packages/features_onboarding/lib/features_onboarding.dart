@@ -1,5 +1,3 @@
-library features_onboarding;
-
 export 'data/datasources/onboarding_local_datasource.dart';
 // Data Layer
 export 'data/models/onboarding_page_model.dart';
