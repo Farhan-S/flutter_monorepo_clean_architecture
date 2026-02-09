@@ -88,7 +88,7 @@ This project follows **Clean Architecture** principles with three distinct layer
 ## 📁 Project Structure
 
 ```
-dio_network_config/
+project/
 ├── melos.yaml                      # Monorepo configuration
 ├── pubspec.yaml                    # Root dependencies
 ├── bootstrap.dart                  # Bootstrap script for dependencies
